@@ -1,37 +1,20 @@
-import { useNavigate } from "react-router-dom";
 import useUsers from "../../context/useUsers";
-import { BsSend, BsPersonCircle } from "react-icons/bs";
+import UsersList from "./UsersList";
 
 export default function Users() {
 	const { users } = useUsers();
-	const navigate = useNavigate();
+
+	const NoUsers = () => (
+		<p style={{ textAlign: "center", color: "red" }}>
+			There are no users in the app yet... Invite your friends to be here!
+		</p>
+	);
 
 	return (
-		<>
+		<div className="users-page">
 			<h1 style={{ textAlign: "center" }}>Users</h1>
-			{users && (
-				<ul>
-					{users.map((u) => (
-						<li key={u.uid}>
-							{u.photoURL ? (
-								<img
-									width={30}
-									style={{ borderRadius: "50%" }}
-									src={u.photoURL}
-									alt={`${u.displayName} avatar`}
-								/>
-							) : (
-								<BsPersonCircle />
-							)}
-							{u.displayName}{" "}
-							<BsSend
-								onClick={() => navigate(`/chats/${u.uid}`)}
-								style={{ cursor: "pointer" }}
-							/>
-						</li>
-					))}
-				</ul>
-			)}
-		</>
+			<hr />
+			{users ? <UsersList users={users} /> : <NoUsers />}
+		</div>
 	);
 }
