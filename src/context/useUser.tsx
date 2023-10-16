@@ -1,8 +1,11 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { auth, firestore } from "../firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, writeBatch } from "firebase/firestore";
 import { User } from "firebase/auth";
+import { FirestoreUser } from "../interfaces/FirestoreUser";
+import { UserChat } from "../interfaces/UserChat";
+import getTimestamp from "../lib/getTimestamp";
 
 const UserContext = createContext<{
 	user: User | null;
@@ -26,40 +29,62 @@ export function UserProvider({ children }: UserProviderProps) {
 	const [user, setUser] = useState<User | null>(null);
 
 	useEffect(() => {
-		async function addUserIfNotExists(loggedUser: User) {
+		async function addUserIfDoesntExist(loggedUser: User) {
 			// check if there is user data in /user collection,
 			// if not => add newly created user to firestore:
 			const docRef = doc(firestore, "users", loggedUser.uid);
 			const docSnap = await getDoc(docRef);
 
-			if (docSnap.exists()) {
-				console.log("User Document data:", docSnap.data());
-			} else {
-				// docSnap.data() will be undefined in this case
-				console.log("There is no such User document... Create one!");
-				// add user to /users collection:
-				const { displayName, email, photoURL, uid } = loggedUser;
-				await setDoc(doc(firestore, "users", loggedUser.uid), {
-					displayName,
-					email,
-					photoURL,
-					uid,
-				});
-			}
+			// USER EXISTS IN DB => RETURN:
+			if (docSnap.exists())
+				return console.log("User data in Firestore:", docSnap.data());
+
+			// USER DOESN'T EXIST IN DB => ADD:
+			console.log("There is no such User data in Firestore... Create one!");
+			// add user to /users collection:
+			const { displayName, photoURL, uid } = loggedUser;
+			const timestamp = getTimestamp();
+
+			const newUser: FirestoreUser = {
+				displayName,
+				photoURL,
+				uid,
+				createdAt: timestamp,
+				updatedAt: timestamp,
+			};
+
+			const newUserChats: {
+				uid: string;
+				chats: UserChat[];
+			} = {
+				uid,
+				chats: [],
+			};
+
+			const batch = writeBatch(firestore);
+
+			const newUserRef = doc(firestore, "users", uid);
+			batch.set(newUserRef, newUser);
+
+			const newUserChatsRef = doc(firestore, "user-chats", uid);
+			batch.set(newUserChatsRef, newUserChats);
+
+			await batch.commit();
 		}
 
 		const unsubscribe = onAuthStateChanged(auth, (u) => {
 			if (u) {
 				setUser(u);
-				addUserIfNotExists(u);
+				addUserIfDoesntExist(u);
 			} else {
-				console.log("User logged out.");
 				setUser(null);
 			}
 		});
 
 		return () => unsubscribe();
 	}, []);
+
+	useEffect(() => console.log({ user }), [user]);
 
 	const value = {
 		user,

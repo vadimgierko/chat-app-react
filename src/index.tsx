@@ -11,6 +11,7 @@ import { UsersProvider } from "./context/useUsers";
 import Chat from "./pages/Chat";
 import Chats from "./pages/Chats";
 import SignIn from "./pages/SignIn";
+import { UserChatsProvider } from "./context/useUserChats";
 
 const router = createBrowserRouter([
 	{
@@ -40,7 +41,9 @@ root.render(
 	<React.StrictMode>
 		<UserProvider>
 			<UsersProvider>
-				<RouterProvider router={router} />
+				<UserChatsProvider>
+					<RouterProvider router={router} />
+				</UserChatsProvider>
 			</UsersProvider>
 		</UserProvider>
 	</React.StrictMode>
