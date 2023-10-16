@@ -4,37 +4,14 @@ import { auth } from "./firebaseConfig";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import useUser from "./context/useUser";
 import { BsPersonCircle } from "react-icons/bs";
+import signIn from "./lib/signIn";
+import SignIn from "./pages/SignIn";
 
 function App() {
 	const { user } = useUser();
 
-	async function signIn() {
-		const provider = new GoogleAuthProvider();
-
-		return signInWithPopup(auth, provider)
-			.then(async (result) => {
-				// This gives you a Google Access Token. You can use it to access the Google API.
-				const credential = GoogleAuthProvider.credentialFromResult(result);
-				const token = credential?.accessToken;
-				// The signed-in user info.
-				const user = result.user;
-				// IdP data available using getAdditionalUserInfo(result)
-				console.log({ user });
-			})
-			.catch((error) => {
-				console.error(error);
-				alert(error);
-			});
-	}
-
 	return (
-		<div
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				minHeight: "100vh",
-			}}
-		>
+		<div className="layout">
 			<header
 				style={{
 					display: "flex",
@@ -42,12 +19,12 @@ function App() {
 					// borderBottom: "0.5px solid black",
 				}}
 			>
-				<h1 style={{ display: "flex" }}>
+				<div style={{ display: "flex" }}>
 					<img src={logo} />
 					<Link style={{ textDecoration: "none" }} to="/">
 						VG Chat
 					</Link>
-				</h1>
+				</div>
 
 				<div style={{ display: "flex" }}>
 					{user && (
@@ -67,7 +44,7 @@ function App() {
 							<span>{user.displayName}</span>
 							{user.photoURL ? (
 								<img
-									height="auto"
+									width="40px"
 									src={user.photoURL}
 									style={{ borderRadius: "50%" }}
 									alt={`${user.displayName} avatar`}
@@ -85,20 +62,9 @@ function App() {
 				</div>
 			</header>
 
-			<main style={{ flexGrow: 1 }}>
-				<Outlet />
-			</main>
+			<main>{user ? <Outlet /> : <SignIn />}</main>
 
-			<footer
-				style={{
-					textAlign: "center",
-					//paddingTop: "0.5em",
-					marginBottom: "0.5em",
-					//borderTop: "0.5px solid black",
-				}}
-			>
-				created by Vadim Gierko 2023
-			</footer>
+			<footer>created by Vadim Gierko 2023</footer>
 		</div>
 	);
 }

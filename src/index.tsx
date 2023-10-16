@@ -4,12 +4,13 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
-// router:
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Users from "./pages/Users";
 import { UserProvider } from "./context/useUser";
 import { UsersProvider } from "./context/useUsers";
 import Chat from "./pages/Chat";
+import Chats from "./pages/Chats";
+import SignIn from "./pages/SignIn";
 
 const router = createBrowserRouter([
 	{
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
 			{
 				path: "users",
 				element: <Users />,
+			},
+			{
+				path: "chats",
+				element: <Chats />,
 			},
 			{
 				path: "chats/:uid",

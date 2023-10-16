@@ -17,6 +17,18 @@ body {
   box-sizing: border-box;
 }
 
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
 h1 {
   text-align: center;
 }
@@ -44,4 +56,17 @@ textarea {
   background-color: var(--dark-grey);
   color: var(--white);
   padding: 1em;
+}
+
+.sign-in {
+  flex-grow: 1; /* Make it fill the available space in the main container */
+  display: flex;
+  flex-direction: column; /* Stack the button vertically in the .sign-in div */
+  align-items: center; /* Center the button horizontally */
+  justify-content: center;
+}
+
+footer {
+  text-align: center;
+  margin-bottom: 0.5em;
 }
