@@ -1,11 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { auth, firestore } from "../firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, onSnapshot, writeBatch } from "firebase/firestore";
-import { User } from "firebase/auth";
-import { FirestoreUser } from "../interfaces/FirestoreUser";
+import { firestore } from "../firebaseConfig";
+import { doc, onSnapshot } from "firebase/firestore";
 import useUser from "./useUser";
-import { UserChat } from "../interfaces/UserChat";
+import { UserChat } from "../interfaces";
 
 const UserChatsContext = createContext<{
 	userChats: UserChat[] | null;
