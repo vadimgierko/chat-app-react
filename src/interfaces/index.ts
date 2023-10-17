@@ -10,6 +10,7 @@ export interface UserChat {
 	id: string;
 	interlocutorId: string;
 	createdAt: number;
+	seenAt: number | null; // compare with updatedAt to notify about not seen chat updates
 	updatedAt: number;
 }
 
@@ -18,15 +19,15 @@ export interface Message {
 	content: string;
 	createdAt: number;
 	senderId: string;
-	seenAt: number | null; // compare with createdAt to notify about not seen message
+	seenByReceiverAt: number | null; // compare with createdAt to notify about not seen message
 	receiverId: string;
 }
 
 export interface Chat {
 	createdAt: number;
+	createdBy: string;
 	id: string;
 	membersIds: string[];
 	messages: [];
-	seenAt: number | null; // compare with updatedAt to notify about not seen chat updates
 	updatedAt: number;
 }

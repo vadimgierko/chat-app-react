@@ -4,6 +4,7 @@ import useUserChats from "../../../context/useUserChats";
 import { useEffect } from "react";
 import useUser from "../../../context/useUser";
 import { FirestoreUser } from "../../../interfaces";
+import { initChat } from "../../../lib";
 
 export default function UsersList({ users }: { users: FirestoreUser[] }) {
 	const navigate = useNavigate();
@@ -70,9 +71,16 @@ export default function UsersList({ users }: { users: FirestoreUser[] }) {
 					{user &&
 						u.uid !== user.uid && ( // do not add btn for logged user !!!
 							<BsPlusSquare
-								onClick={() => {
+								onClick={async () => {
+									const newChatId = await initChat(user.uid, u.uid);
+
+									if (!newChatId)
+										return alert(
+											"No new chat id was passed from initChat()..."
+										);
+
+									navigate("/chats"); // this will be removed
 									// TODO:
-									// 1. CREATE NEW CHAT & GET CHAT ID
 									// 2. NAVIGATE TO NEW CHAT
 								}}
 								style={{ cursor: "pointer" }}

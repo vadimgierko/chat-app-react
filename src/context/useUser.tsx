@@ -80,7 +80,7 @@ export function UserProvider({ children }: UserProviderProps) {
 			}
 		});
 
-		return () => unsubscribe();
+		return unsubscribe;
 	}, []);
 
 	useEffect(() => console.log({ user }), [user]);

@@ -1,6 +1,7 @@
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
-import { auth } from "../firebaseConfig";
-import { FirestoreUser } from "../interfaces";
+import { auth, firestore } from "../firebaseConfig";
+import { Chat, FirestoreUser, UserChat } from "../interfaces";
+import { arrayUnion, collection, doc, writeBatch } from "firebase/firestore";
 
 //==================== helpers ======================//
 
@@ -19,7 +20,7 @@ function getUserById(users: FirestoreUser[], uid: string) {
 	return user;
 }
 
-//=================== firebase ======================//
+//====================== auth =======================//
 
 async function signIn() {
 	const provider = new GoogleAuthProvider();
@@ -44,6 +45,77 @@ async function logOut() {
 	return signOut(auth);
 }
 
-//=================== exports =======================//
+//====================== other ======================//
 
-export { getTimestamp, getUserById, logOut, signIn };
+/**
+ * initialize/ create new chat, add it to logged user & interlocutor user-chats & return chat id
+ */
+async function initChat(userId: string, interlocutorId: string) {
+	let id: string | null = null;
+
+	// get new chat id
+	const newChatRef = doc(collection(firestore, "chats"));
+	id = newChatRef.id;
+
+	if (!id) return null;
+
+	const timestamp = getTimestamp();
+
+	try {
+		const batch = writeBatch(firestore);
+
+		// add new chat to /chats:
+		const newChat: Chat = {
+			createdAt: timestamp,
+			createdBy: userId,
+			id,
+			membersIds: [userId, interlocutorId],
+			messages: [],
+			updatedAt: timestamp,
+		};
+
+		batch.set(newChatRef, newChat);
+
+		// add new chat to logged user /user-chats:
+		const loggedUserChat: UserChat = {
+			id,
+			interlocutorId,
+			createdAt: timestamp,
+			seenAt: null,
+			updatedAt: timestamp,
+		};
+
+		const loggedUserChatsRef = doc(firestore, "user-chats", userId);
+		batch.update(loggedUserChatsRef, { chats: arrayUnion(loggedUserChat) });
+
+		// add new chat to interlocutor /user-chats:
+		const interlocutorUserChat: UserChat = {
+			id,
+			interlocutorId: userId,
+			createdAt: timestamp,
+			seenAt: null,
+			updatedAt: timestamp,
+		};
+
+		const interlocutorUserChatsRef = doc(
+			firestore,
+			"user-chats",
+			interlocutorId
+		);
+
+		batch.update(interlocutorUserChatsRef, {
+			chats: arrayUnion(interlocutorUserChat),
+		});
+
+		await batch.commit();
+	} catch (error) {
+		console.log(error);
+		alert(error);
+	}
+
+	return id;
+}
+
+//===================== exports =====================//
+
+export { getTimestamp, getUserById, initChat, logOut, signIn };

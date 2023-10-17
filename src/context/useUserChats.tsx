@@ -33,23 +33,29 @@ export function UserChatsProvider({ children }: UserChatsProviderProps) {
 	const [userChats, setUserChats] = useState<UserChat[] | null>(null); // if not fetched or doc doesn't exist
 
 	useEffect(() => {
-		if (!user) return;
+		let unsubscribe;
 
-		const unsubscribe = onSnapshot(
-			doc(firestore, `user-chats`, user.uid),
-			(doc) => {
-				if (doc.exists()) {
-					const data = doc.data(); // {uid, chats}
-					const chats = data.chats as UserChat[];
-					const chatsSortedByUpdateTime = chats.sort(
-						(a, b) => b.updatedAt - a.updatedAt
-					);
-					setUserChats(chatsSortedByUpdateTime);
+		if (user) {
+			unsubscribe = onSnapshot(
+				doc(firestore, `user-chats`, user.uid),
+				(doc) => {
+					if (doc.exists()) {
+						const data = doc.data(); // {uid, chats}
+						const chats = data.chats as UserChat[];
+						const chatsSortedByUpdateTime = chats.sort(
+							(a, b) => b.updatedAt - a.updatedAt
+						);
+						setUserChats(chatsSortedByUpdateTime);
+					} else {
+						console.error("There is no user chats doc...");
+					}
 				}
-			}
-		);
+			);
+		} else {
+			setUserChats(null);
+		}
 
-		return unsubscribe();
+		return unsubscribe;
 	}, [user]);
 
 	useEffect(() => console.log({ userChats }), [userChats]);
