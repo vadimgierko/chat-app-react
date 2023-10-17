@@ -40,8 +40,10 @@ export function UserChatsProvider({ children }: UserChatsProviderProps) {
 				doc(firestore, `user-chats`, user.uid),
 				(doc) => {
 					if (doc.exists()) {
-						const data = doc.data(); // {uid, chats}
-						const chats = data.chats as UserChat[];
+						const data = doc.data();
+						const chats = Object.keys(data).map(
+							(chatId) => data[chatId]
+						) as UserChat[];
 						const chatsSortedByUpdateTime = chats.sort(
 							(a, b) => b.updatedAt - a.updatedAt
 						);

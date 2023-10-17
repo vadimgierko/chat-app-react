@@ -13,7 +13,12 @@ export default function ChatListItem({ chat }: { chat: UserChat }) {
 	if (!interlocutor) return null;
 
 	return (
-		<li>
+		<li
+			style={{
+				backgroundColor:
+					chat.seenAt && chat.seenAt >= chat.updatedAt ? "" : "green",
+			}}
+		>
 			{interlocutor.photoURL ? (
 				<img
 					width={30}
@@ -23,7 +28,7 @@ export default function ChatListItem({ chat }: { chat: UserChat }) {
 				/>
 			) : (
 				<BsPersonCircle />
-			)}
+			)}{" "}
 			{interlocutor.displayName}{" "}
 			<BsSend
 				onClick={() => navigate(`/chats/${chat.id}`)}

@@ -86,7 +86,7 @@ async function initChat(userId: string, interlocutorId: string) {
 		};
 
 		const loggedUserChatsRef = doc(firestore, "user-chats", userId);
-		batch.update(loggedUserChatsRef, { chats: arrayUnion(loggedUserChat) });
+		batch.update(loggedUserChatsRef, { [id]: loggedUserChat });
 
 		// add new chat to interlocutor /user-chats:
 		const interlocutorUserChat: UserChat = {
@@ -104,7 +104,7 @@ async function initChat(userId: string, interlocutorId: string) {
 		);
 
 		batch.update(interlocutorUserChatsRef, {
-			chats: arrayUnion(interlocutorUserChat),
+			[id]: interlocutorUserChat,
 		});
 
 		await batch.commit();

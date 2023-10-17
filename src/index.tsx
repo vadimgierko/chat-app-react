@@ -10,7 +10,6 @@ import { UserProvider } from "./context/useUser";
 import { UsersProvider } from "./context/useUsers";
 import Chat from "./pages/Chat";
 import Chats from "./pages/Chats";
-import SignIn from "./pages/SignIn";
 import { UserChatsProvider } from "./context/useUserChats";
 
 const router = createBrowserRouter([
@@ -27,7 +26,7 @@ const router = createBrowserRouter([
 				element: <Chats />,
 			},
 			{
-				path: "chats/:uid",
+				path: "chats/:id",
 				element: <Chat />,
 			},
 		],
