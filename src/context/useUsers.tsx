@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { firestore } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
-import { FirestoreUser } from "../interfaces/FirestoreUser";
+import { FirestoreUser } from "../interfaces";
 import useUser from "./useUser";
 
 const UsersContext = createContext<{
@@ -48,6 +48,8 @@ export function UsersProvider({ children }: UsersProviderProps) {
 			setUsers(null);
 		}
 	}, [user]);
+
+	useEffect(() => console.log({ users }), [users]);
 
 	const value = {
 		users,

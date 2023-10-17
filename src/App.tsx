@@ -1,11 +1,9 @@
 import logo from "./icons/logo.svg";
 import { Link, Outlet } from "react-router-dom";
-import { auth } from "./firebaseConfig";
-import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import useUser from "./context/useUser";
 import { BsPersonCircle } from "react-icons/bs";
-import signIn from "./lib/signIn";
 import SignIn from "./pages/SignIn";
+import { logOut, signIn } from "./lib";
 
 function App() {
 	const { user } = useUser();
@@ -20,7 +18,7 @@ function App() {
 				}}
 			>
 				<div style={{ display: "flex" }}>
-					<img src={logo} />
+					<img src={logo} alt="react logo" />
 					<Link style={{ textDecoration: "none" }} to="/">
 						VG Chat
 					</Link>
@@ -55,7 +53,7 @@ function App() {
 						</div>
 					)}
 					<div>
-						<button onClick={() => (user ? signOut(auth) : signIn())}>
+						<button onClick={() => (user ? logOut() : signIn())}>
 							{user ? "log out" : "sign in"}
 						</button>
 					</div>

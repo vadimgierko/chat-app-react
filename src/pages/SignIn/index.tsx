@@ -1,4 +1,4 @@
-import signIn from "../../lib/signIn";
+import { signIn } from "../../lib";
 
 export default function SignIn() {
 	return (

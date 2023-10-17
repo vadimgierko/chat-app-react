@@ -1,11 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { auth, firestore } from "../firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, onSnapshot, writeBatch } from "firebase/firestore";
-import { User } from "firebase/auth";
-import { FirestoreUser } from "../interfaces/FirestoreUser";
+import { firestore } from "../firebaseConfig";
+import { doc, onSnapshot } from "firebase/firestore";
 import useUser from "./useUser";
-import { UserChat } from "../interfaces/UserChat";
+import { UserChat } from "../interfaces";
 
 const UserChatsContext = createContext<{
 	userChats: UserChat[] | null;
@@ -36,23 +33,31 @@ export function UserChatsProvider({ children }: UserChatsProviderProps) {
 	const [userChats, setUserChats] = useState<UserChat[] | null>(null); // if not fetched or doc doesn't exist
 
 	useEffect(() => {
-		if (!user) return;
+		let unsubscribe;
 
-		const unsubscribe = onSnapshot(
-			doc(firestore, `user-chats`, user.uid),
-			(doc) => {
-				if (doc.exists()) {
-					const data = doc.data(); // {uid, chats}
-					const chats = data.chats as UserChat[];
-					const chatsSortedByUpdateTime = chats.sort(
-						(a, b) => b.updatedAt - a.updatedAt
-					);
-					setUserChats(chatsSortedByUpdateTime);
+		if (user) {
+			unsubscribe = onSnapshot(
+				doc(firestore, `user-chats`, user.uid),
+				(doc) => {
+					if (doc.exists()) {
+						const data = doc.data();
+						const chats = Object.keys(data).map(
+							(chatId) => data[chatId]
+						) as UserChat[];
+						const chatsSortedByUpdateTime = chats.sort(
+							(a, b) => b.updatedAt - a.updatedAt
+						);
+						setUserChats(chatsSortedByUpdateTime);
+					} else {
+						console.error("There is no user chats doc...");
+					}
 				}
-			}
-		);
+			);
+		} else {
+			setUserChats(null);
+		}
 
-		return unsubscribe();
+		return unsubscribe;
 	}, [user]);
 
 	useEffect(() => console.log({ userChats }), [userChats]);
