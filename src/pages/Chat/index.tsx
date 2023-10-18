@@ -1,13 +1,15 @@
 import { useParams } from "react-router-dom";
 import useUsers from "../../context/useUsers";
-import { BsPersonCircle } from "react-icons/bs";
 import { useEffect, useState } from "react";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { firestore } from "../../firebaseConfig";
 import useUser from "../../context/useUser";
-import { getTimestamp } from "../../lib";
+import { getTimestamp, sendMessage } from "../../lib";
 import useUserChats from "../../context/useUserChats";
 import { Chat as IChat } from "../../interfaces";
+import ChatMessages from "./ChatMessages";
+import ChatInput from "./ChatInput";
+import ChatHeader from "./ChatHeader";
 
 export default function Chat() {
 	const { id: chatId } = useParams();
@@ -20,11 +22,23 @@ export default function Chat() {
 	const userChat = userChats?.find((c) => c.id === chatId);
 	const interlocutor = users?.find((u) => u.uid === userChat?.interlocutorId);
 
+	async function handleSendMessage(content: string) {
+		if (!user) return alert("No logged user... Cannot send the message...");
+		if (!interlocutor)
+			return alert("No interlocutor provided... Cannot send the message...");
+		if (!chat)
+			return alert("No chat data provided... Cannot send the message...");
+
+		console.log("Sending message...");
+		await sendMessage(content, user.uid, interlocutor.uid, chat.id);
+	}
+
 	// fetch chat & listen to updates:
 	useEffect(() => {
 		let unsubscribe;
 
 		if (chatId) {
+			console.log("fetching chat messages...");
 			unsubscribe = onSnapshot(doc(firestore, "chats", chatId), (doc) => {
 				if (doc.exists()) {
 					const data = doc.data() as IChat;
@@ -51,9 +65,10 @@ export default function Chat() {
 			const timestamp = getTimestamp();
 
 			try {
-				const userChatRef = doc(firestore, "user-chats", `${user.uid}`);
+				const userChatRef = doc(firestore, "user-chats", user.uid);
+
 				await updateDoc(userChatRef, {
-					[chatId]: { ...userChat, seenAt: timestamp },
+					[`${chatId}.seenAt`]: timestamp,
 				});
 			} catch (error) {
 				console.log(error);
@@ -61,36 +76,28 @@ export default function Chat() {
 			}
 		}
 
-		updateChatSeenAt();
-	}, []);
+		if (user && chatId) {
+			// if it's set, than it will not change, so it runs once:
+			updateChatSeenAt();
+		}
+	}, [chatId, user]);
 
 	useEffect(() => console.log({ chat }), [chat]);
 
 	if (!chat) return <p style={{ color: "red" }}>There is no such chat...</p>;
 	if (!interlocutor)
 		return <p style={{ color: "red" }}>There is no such interlocutor...</p>;
+	if (!user) return <p style={{ color: "red" }}>You need to be logged...</p>;
 
 	return (
-		<div>
-			<h1>
-				{interlocutor.photoURL ? (
-					<img
-						width={30}
-						style={{ borderRadius: "50%" }}
-						src={interlocutor.photoURL}
-						alt={`${interlocutor.displayName} avatar`}
-					/>
-				) : (
-					<BsPersonCircle />
-				)}{" "}
-				{interlocutor.displayName}
-			</h1>
-			<div className="chat-messages" style={{ height: "200px" }}>
-				{chat.messages.length
-					? "There are messages in chat! (but not implemented yet...)"
-					: "There are no messages yet..."}
-			</div>
-			<textarea placeholder="type something..." />
+		<div className="chat-page">
+			<ChatHeader interlocutor={interlocutor} />
+
+			<hr />
+
+			<ChatMessages chatId={chat.id} messages={chat.messages} />
+
+			<ChatInput onSend={handleSendMessage} />
 		</div>
 	);
 }

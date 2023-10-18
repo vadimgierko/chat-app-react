@@ -30,7 +30,7 @@ export interface Message {
 	content: string;
 	createdAt: number;
 	senderId: string;
-	seenByReceiverAt: number | null; // compare with createdAt to notify about not seen message
+	// seenByReceiverAt: number | null; // compare with createdAt to notify about not seen message
 	receiverId: string;
 }
 
@@ -39,6 +39,6 @@ export interface Chat {
 	createdBy: string;
 	id: string;
 	membersIds: string[];
-	messages: [];
+	messages: Message[];
 	updatedAt: number;
 }
