@@ -1,6 +1,6 @@
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { auth, firestore } from "../firebaseConfig";
-import { Chat, FirestoreUser, UserChat } from "../interfaces";
+import { Chat, FirestoreUser, Message, UserChat } from "../interfaces";
 import { arrayUnion, collection, doc, writeBatch } from "firebase/firestore";
 
 //==================== helpers ======================//
@@ -116,6 +116,54 @@ async function initChat(userId: string, interlocutorId: string) {
 	return id;
 }
 
+async function sendMessage(
+	content: string,
+	senderId: string,
+	receiverId: string,
+	chatId: string
+) {
+	const timestamp = getTimestamp();
+
+	try {
+		const batch = writeBatch(firestore);
+
+		// add new message to chat & update chat's updatedAt:
+		const newMessage: Message = {
+			createdAt: timestamp,
+			chatId,
+			content,
+			senderId,
+			receiverId,
+		};
+
+		const chatRef = doc(firestore, "chats", chatId);
+
+		batch.update(chatRef, {
+			messages: arrayUnion(newMessage),
+			updatedAt: timestamp,
+		});
+
+		// update logged user /user-chats:
+		const loggedUserChatsRef = doc(firestore, "user-chats", senderId);
+		batch.update(loggedUserChatsRef, {
+			[`${chatId}.updatedAt`]: timestamp,
+			[`${chatId}.seenAt`]: timestamp,
+		});
+
+		// update interlocutor /user-chats:
+		const interlocutorUserChatsRef = doc(firestore, "user-chats", receiverId);
+
+		batch.update(interlocutorUserChatsRef, {
+			[`${chatId}.updatedAt`]: timestamp,
+		});
+
+		await batch.commit();
+	} catch (error) {
+		console.log(error);
+		alert(error);
+	}
+}
+
 //===================== exports =====================//
 
-export { getTimestamp, getUserById, initChat, logOut, signIn };
+export { getTimestamp, getUserById, initChat, logOut, sendMessage, signIn };

@@ -4,6 +4,11 @@ import useUser from "./context/useUser";
 import { BsPersonCircle } from "react-icons/bs";
 import SignIn from "./pages/SignIn";
 import { logOut, signIn } from "./lib";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./firebaseConfig";
+
+const testUserEmail = "testuser@gmail.com";
+const testUserPassword = "spss2020";
 
 function App() {
 	const { user } = useUser();
@@ -52,6 +57,21 @@ function App() {
 							)}
 						</div>
 					)}
+					<div>
+						<button
+							onClick={async () =>
+								user
+									? logOut()
+									: signInWithEmailAndPassword(
+											auth,
+											testUserEmail,
+											testUserPassword
+									  )
+							}
+						>
+							{user ? "log out test user" : "sign in as test user"}
+						</button>
+					</div>
 					<div>
 						<button onClick={() => (user ? logOut() : signIn())}>
 							{user ? "log out" : "sign in"}
