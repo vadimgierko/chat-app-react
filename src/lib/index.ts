@@ -10,6 +10,26 @@ function getTimestamp() {
 	return timestamp;
 }
 
+function getDateFromTimestamp(timestamp: number) {
+	const date = new Date(timestamp);
+
+	const day = date.getDate();
+	const month = date.getMonth() + 1; // Months are zero-based, so add 1
+	const year = date.getFullYear();
+	const hours = date.getHours();
+	const minutes = date.getMinutes();
+
+	// Ensure the single-digit day, month, hours, and minutes have leading zeros
+	const dayStr = day < 10 ? `0${day}` : day.toString();
+	const monthStr = month < 10 ? `0${month}` : month.toString();
+	const hoursStr = hours < 10 ? `0${hours}` : hours.toString();
+	const minutesStr = minutes < 10 ? `0${minutes}` : minutes.toString();
+
+	const formattedDate = `${dayStr}.${monthStr}.${year} ${hoursStr}:${minutesStr}`;
+
+	return formattedDate;
+}
+
 function getUserById(users: FirestoreUser[], uid: string) {
 	if (!users || !users.length) return null;
 
@@ -166,4 +186,12 @@ async function sendMessage(
 
 //===================== exports =====================//
 
-export { getTimestamp, getUserById, initChat, logOut, sendMessage, signIn };
+export {
+	getDateFromTimestamp,
+	getTimestamp,
+	getUserById,
+	initChat,
+	logOut,
+	sendMessage,
+	signIn,
+};

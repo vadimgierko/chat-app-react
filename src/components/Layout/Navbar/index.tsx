@@ -18,6 +18,8 @@ import useUsers from "../../../context/useUsers";
 import useUserChats from "../../../context/useUserChats";
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
+import { MaxWidthContext } from "../../../App";
+import { useContext } from "react";
 
 const testUserEmail = "testuser@gmail.com";
 const testUserPassword = "";
@@ -26,6 +28,8 @@ export default function NavigationBar() {
 	const { user } = useUser();
 	const { users } = useUsers();
 	const { userChats } = useUserChats();
+
+	const maxWidth = useContext(MaxWidthContext);
 
 	const navigate = useNavigate();
 
@@ -41,7 +45,7 @@ export default function NavigationBar() {
 			fixed="top"
 			//className="shadow do-not-display-when-print"
 		>
-			<Container fluid>
+			<Container style={{ maxWidth: maxWidth }}>
 				<LinkContainer to="/">
 					<Navbar.Brand>
 						<img
@@ -107,8 +111,8 @@ export default function NavigationBar() {
 								>
 									<LinkContainer
 										to="/"
-										onClick={() => {
-											logOut();
+										onClick={async () => {
+											await logOut();
 											navigate("/");
 										}}
 									>

@@ -14,7 +14,7 @@ export default function ChatMessages({
 	if (!user) return null;
 
 	return (
-		<div className="chat-messages" style={{ flex: 1, overflowY: "auto" }}>
+		<div style={{ flex: 1, overflowY: "auto" }}>
 			{!messages.length &&
 				"There are messages in chat! (but not implemented yet...)"}
 

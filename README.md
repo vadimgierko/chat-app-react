@@ -1,4 +1,4 @@
-# Realtime Chat App built with React, TypeScript & Firebase
+# Realtime Chat App built with React, TypeScript, Bootstrap, Firebase Authentication & Firestore deployed on Vercel
 
 This app is a part of a wider experiment: I'm building same chat app a few times with different technologies:
 
@@ -19,9 +19,8 @@ Despite all 3 chat apps will be built in different main technologies (React, Sve
 
 - TypeScript
 - Firebase (all apps will share same Firebase project)
-  - Authentication
+  - Authentication (using Google Provider)
   - Firestore
-  - Cloud Storage (to store user avatars)
 - pure CSS/ styles (all apps will have same appearance & the only difference will be that each app will have the technology related color scheme to distinguish them at one glance)
 - app structure & a lot of shared code
 
@@ -37,7 +36,10 @@ So the React version of the chat app will be the foundation and the codebase to 
 
 ## Tech Stack
 
-- **React 18.2** (I've used CRA PWA TS template to init this project, more info [here](https://create-react-app.dev/docs/making-a-progressive-web-app/))
+- **React 18.2.0** (I've used CRA PWA TS template to init this project)
 - **React Router 6.16**
 - **TypeScript 4.9.5**
-- **Firebase 10.5**
+- **Firebase 10.5.0**
+- **Bootstrap 5.3.2**
+- **React Bootstrap 2.9.0**
+- **React Icons 4.11.0**

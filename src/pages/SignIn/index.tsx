@@ -7,7 +7,7 @@ export default function SignIn() {
 
 	async function handleSignIn() {
 		await signIn();
-		navigate("/chats", { replace: true });
+		//navigate("/chats", { replace: true });
 	}
 
 	return (

@@ -10,6 +10,7 @@ import { Chat as IChat } from "../../interfaces";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
 import ChatHeader from "./ChatHeader";
+import Container from "react-bootstrap/Container";
 
 export default function Chat() {
 	const { id: chatId } = useParams();
@@ -90,10 +91,7 @@ export default function Chat() {
 	if (!user) return <p style={{ color: "red" }}>You need to be logged...</p>;
 
 	return (
-		<div
-			className="chat-page"
-			style={{ display: "flex", flexDirection: "column", height: "100%" }}
-		>
+		<div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
 			<ChatHeader interlocutor={interlocutor} />
 
 			<ChatMessages chatId={chat.id} messages={chat.messages} />

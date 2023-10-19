@@ -7,7 +7,7 @@ export default function ChatHeader({
 	interlocutor: FirestoreUser;
 }) {
 	return (
-		<h1 className="bg-dark p-1">
+		<h1 className="p-1" style={{ backgroundColor: "rgb(23, 24, 27)" }}>
 			{interlocutor.photoURL ? (
 				<img
 					width={30}

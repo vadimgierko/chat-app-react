@@ -15,13 +15,6 @@ main {
   height: calc(100vh - 99px)
 }
 
-footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-}
-
 /* Hide the vertical scrollbar */
 ::-webkit-scrollbar {
   width: 0;
