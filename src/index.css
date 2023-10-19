@@ -1,72 +1,54 @@
-:root {
-  --dark-grey: rgb(37, 37, 37);
-  --white: rgb(230, 230, 230);
-  --white-hover: rgba(230, 230, 230, 0.8);
-}
-
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--dark-grey);
-  color: var(--white);
-  box-sizing: border-box;
-}
+  overflow: hidden;
 
-.layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  /* Hide the scrollbar in Firefox */
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
+
+  /* Style the track (optional) */
+  scrollbar-track-color: transparent;
 }
 
 main {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
+  height: calc(100vh - 99px)
+}
+
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Hide the vertical scrollbar */
+::-webkit-scrollbar {
+  width: 0;
+}
+
+/* Hide the horizontal scrollbar (if needed) */
+::-webkit-scrollbar-thumb:horizontal {
+  width: 0;
+}
+
+/* Style the track (optional) */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.form-control::placeholder {
+  color: rgba(250, 250, 250, 0.6)
 }
 
 h1 {
   text-align: center;
 }
 
-a {
-  color: var(--white)
-}
-
-a:hover {
-  color: var(--white-hover)
-}
-
-button {
-  background-color: var(--dark-grey);
-  color: var(--white);
+.icon-btn {
   cursor: pointer;
-  padding: 0.5em;
 }
 
-button:hover {
-  color: var(--white-hover)
-}
-
-textarea {
-  background-color: var(--dark-grey);
-  color: var(--white);
-  padding: 1em;
-}
-
-.sign-in {
-  flex-grow: 1; /* Make it fill the available space in the main container */
-  display: flex;
-  flex-direction: column; /* Stack the button vertically in the .sign-in div */
-  align-items: center; /* Center the button horizontally */
-  justify-content: center;
-}
-
-footer {
-  text-align: center;
-  margin-bottom: 0.5em;
+.icon-btn:hover {
+  color: rgba(250, 250, 250, 0.6)
 }

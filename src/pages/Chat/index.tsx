@@ -90,10 +90,11 @@ export default function Chat() {
 	if (!user) return <p style={{ color: "red" }}>You need to be logged...</p>;
 
 	return (
-		<div className="chat-page">
+		<div
+			className="chat-page"
+			style={{ display: "flex", flexDirection: "column", height: "100%" }}
+		>
 			<ChatHeader interlocutor={interlocutor} />
-
-			<hr />
 
 			<ChatMessages chatId={chat.id} messages={chat.messages} />
 
