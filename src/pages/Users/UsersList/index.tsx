@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import useUser from "../../../context/useUser";
 import { FirestoreUser } from "../../../interfaces";
 import { initChat } from "../../../lib";
+import UserListItem from "./UserListItem";
 
 export default function UsersList({ users }: { users: FirestoreUser[] }) {
 	const navigate = useNavigate();
@@ -27,66 +28,13 @@ export default function UsersList({ users }: { users: FirestoreUser[] }) {
 	useEffect(() => console.log({ interlocutors }));
 
 	return (
-		<ul className="users-list">
+		<ul style={{ listStyle: "none", paddingLeft: 0 }}>
 			{userChats &&
 				interlocutors.map((u) => (
-					<li key={u.uid}>
-						{u.photoURL ? (
-							<img
-								width={30}
-								style={{ borderRadius: "50%" }}
-								src={u.photoURL}
-								alt={`${u.displayName} avatar`}
-							/>
-						) : (
-							<BsPersonCircle />
-						)}
-						{u.displayName}{" "}
-						<BsSend
-							onClick={() =>
-								navigate(
-									`/chats/${
-										userChats.filter((chat) => chat.interlocutorId === u.uid)[0]
-											.id // there can be only one user's chat with the intelocutor !!!
-									}`
-								)
-							}
-							style={{ cursor: "pointer" }}
-						/>
-					</li>
+					<UserListItem key={u.uid} user={u} isInterlocutor={true} />
 				))}
 			{noninterlocutors.map((u) => (
-				<li key={u.uid}>
-					{u.photoURL ? (
-						<img
-							width={30}
-							style={{ borderRadius: "50%" }}
-							src={u.photoURL}
-							alt={`${u.displayName} avatar`}
-						/>
-					) : (
-						<BsPersonCircle />
-					)}
-					{u.displayName}{" "}
-					{user &&
-						u.uid !== user.uid && ( // do not add btn for logged user !!!
-							<BsPlusSquare
-								onClick={async () => {
-									const newChatId = await initChat(user.uid, u.uid);
-
-									if (!newChatId)
-										return alert(
-											"No new chat id was passed from initChat()..."
-										);
-
-									navigate("/chats"); // this will be removed
-									// TODO:
-									// 2. NAVIGATE TO NEW CHAT
-								}}
-								style={{ cursor: "pointer" }}
-							/>
-						)}
-				</li>
+				<UserListItem key={u.uid} user={u} isInterlocutor={false} />
 			))}
 		</ul>
 	);

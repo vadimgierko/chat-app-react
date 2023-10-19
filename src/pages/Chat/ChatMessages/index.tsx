@@ -14,12 +14,16 @@ export default function ChatMessages({
 	if (!user) return null;
 
 	return (
-		<div className="chat-messages">
+		<div className="chat-messages" style={{ flex: 1, overflowY: "auto" }}>
 			{!messages.length &&
 				"There are messages in chat! (but not implemented yet...)"}
 
 			{messages.map((m, i) => (
-				<Message message={m} key={m.content + i} />
+				<Message
+					message={m}
+					key={m.content + i}
+					isLast={i === messages.length - 1}
+				/>
 			))}
 		</div>
 	);
