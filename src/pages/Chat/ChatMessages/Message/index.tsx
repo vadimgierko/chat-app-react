@@ -1,7 +1,11 @@
 import { useEffect, useRef } from "react";
 import useUser from "../../../../context/useUser";
 import { Message as IMessage } from "../../../../interfaces";
-import { getDateFromTimestamp, getUserById } from "../../../../lib";
+import {
+	getDateFromTimestamp,
+	getUserById,
+	isUserOnline,
+} from "../../../../lib";
 import useUsers from "../../../../context/useUsers";
 import { BsPersonCircle } from "react-icons/bs";
 
@@ -66,13 +70,27 @@ export default function Message({
 								}}
 							/>
 						)}
+						<div
+							className={`bg-${
+								isUserOnline(interlocutor) ? "success" : "secondary"
+							}`}
+							style={{
+								minWidth: 15,
+								minHeight: 15,
+								maxWidth: 15,
+								maxHeight: 15,
+								borderRadius: "50%",
+								marginTop: "-0.5em",
+								marginLeft: "1.5em",
+							}}
+						></div>
 					</div>
 				)}
 				<div
 					style={{
 						width: "fit-content",
 						maxWidth: "70%",
-						marginLeft: message.senderId === user.uid ? "auto" : 0,
+						marginLeft: message.senderId === user.uid ? "auto" : "0.5em",
 						marginRight: message.senderId === user.uid ? 0 : "auto",
 						// textAlign: message.senderId === user.uid ? "end" : "start",
 						backgroundColor:

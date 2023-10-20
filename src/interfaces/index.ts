@@ -1,9 +1,4 @@
 export interface FirestoreUser {
-	/**
-	 * Is user online right now.
-	 * TODO: figure out how to check that...
-	 */
-	// active: boolean;
 	createdAt: number;
 	/**
 	 * If the user is deleted,
@@ -13,6 +8,8 @@ export interface FirestoreUser {
 	// deleted: boolean;
 	displayName: string | null;
 	photoURL: string | null;
+	signedInAt: number | null;
+	signedOutAt: number | null;
 	uid: string;
 	updatedAt: number;
 }

@@ -13,7 +13,7 @@ import logo from "../../../icons/logo.svg";
 import { BsPersonCircle } from "react-icons/bs";
 import { logOut, signIn } from "../../../lib/index";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../../firebaseConfig";
+import { auth, firestore } from "../../../firebaseConfig";
 import useUsers from "../../../context/useUsers";
 import useUserChats from "../../../context/useUserChats";
 import { useNavigate } from "react-router-dom";
@@ -112,7 +112,7 @@ export default function NavigationBar() {
 									<LinkContainer
 										to="/"
 										onClick={async () => {
-											await logOut();
+											await logOut(user);
 											navigate("/");
 										}}
 									>

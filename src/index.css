@@ -40,6 +40,7 @@ h1 {
 
 .icon-btn {
   cursor: pointer;
+  margin-top: 0.4em;
 }
 
 .icon-btn:hover {

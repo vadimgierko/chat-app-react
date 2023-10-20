@@ -2,7 +2,7 @@ import useUserChats from "../../../../context/useUserChats";
 import { BsPersonCircle, BsPlusSquare, BsSend } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { FirestoreUser } from "../../../../interfaces";
-import { initChat } from "../../../../lib";
+import { initChat, isUserOnline } from "../../../../lib";
 import useUser from "../../../../context/useUser";
 
 export default function UserListItem({
@@ -19,8 +19,8 @@ export default function UserListItem({
 	if (!userChats) return null;
 
 	return (
-		<li className="p-2 mb-1">
-			<span className="me-3">
+		<li className="p-2 mb-1" style={{ display: "flex" }}>
+			<div className="me-3">
 				{user.photoURL ? (
 					<img
 						width={30}
@@ -31,8 +31,26 @@ export default function UserListItem({
 				) : (
 					<BsPersonCircle size={30} />
 				)}
+				<div
+					className={`bg-${isUserOnline(user) ? "success" : "secondary"}`}
+					style={{
+						minWidth: 15,
+						minHeight: 15,
+						maxWidth: 15,
+						maxHeight: 15,
+						borderRadius: "50%",
+						marginTop: "-0.5em",
+						marginLeft: "1.5em",
+					}}
+				></div>
+			</div>
+
+			<span className="me-3">
+				{user.displayName}
+				<span className="text-secondary">
+					{user.uid === loggedUser?.uid ? " (it's you)" : ""}
+				</span>
 			</span>
-			<span className="me-3">{user.displayName}</span>
 
 			{isInterlocutor && (
 				<BsSend

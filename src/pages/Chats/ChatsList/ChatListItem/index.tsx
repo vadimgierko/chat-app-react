@@ -1,7 +1,7 @@
 import { BsPersonCircle } from "react-icons/bs";
 import useUsers from "../../../../context/useUsers";
 import { UserChat } from "../../../../interfaces";
-import { getUserById } from "../../../../lib";
+import { getUserById, isUserOnline } from "../../../../lib";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "react-bootstrap";
 
@@ -15,10 +15,8 @@ export default function ChatListItem({ chat }: { chat: UserChat }) {
 
 	return (
 		<li
-			className={`p-2 rounded mb-1 ${
-				chat.seenAt && chat.seenAt >= chat.updatedAt
-					? "bg-dark"
-					: "bg-secondary"
+			className={`p-2 mb-1 ${
+				chat.seenAt && chat.seenAt >= chat.updatedAt ? "" : "bg-dark rounded"
 			}`}
 			onClick={() => navigate(`/chats/${chat.id}`)}
 			style={{
@@ -27,19 +25,35 @@ export default function ChatListItem({ chat }: { chat: UserChat }) {
 				justifyContent: "space-between",
 			}}
 		>
-			<div>
-				<span className="me-3">
-					{interlocutor.photoURL ? (
-						<img
-							width={30}
-							style={{ borderRadius: "50%" }}
-							src={interlocutor.photoURL}
-							alt={`${interlocutor.displayName} avatar`}
-						/>
-					) : (
-						<BsPersonCircle size={30} />
-					)}
-				</span>
+			<div className="d-flex">
+				<div>
+					<div className="me-3">
+						{interlocutor.photoURL ? (
+							<img
+								width={30}
+								style={{ borderRadius: "50%" }}
+								src={interlocutor.photoURL}
+								alt={`${interlocutor.displayName} avatar`}
+							/>
+						) : (
+							<BsPersonCircle size={30} />
+						)}
+					</div>
+					<div
+						className={`bg-${
+							isUserOnline(interlocutor) ? "success" : "secondary"
+						}`}
+						style={{
+							minWidth: 15,
+							minHeight: 15,
+							maxWidth: 15,
+							maxHeight: 15,
+							borderRadius: "50%",
+							marginTop: "-0.5em",
+							marginLeft: "1.5em",
+						}}
+					></div>
+				</div>
 				<span>{interlocutor.displayName}</span>
 			</div>
 
