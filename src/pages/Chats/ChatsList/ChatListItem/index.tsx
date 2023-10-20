@@ -1,22 +1,41 @@
 import { BsPersonCircle } from "react-icons/bs";
 import useUsers from "../../../../context/useUsers";
 import { UserChat } from "../../../../interfaces";
-import { getUserById, isUserOnline } from "../../../../lib";
+import { getUserById, isUserOnline, notifyWithAsound } from "../../../../lib";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "react-bootstrap";
+import { useEffect } from "react";
+import useUser from "../../../../context/useUser";
 
 export default function ChatListItem({ chat }: { chat: UserChat }) {
+	const { user } = useUser();
 	const { users } = useUsers();
 	const interlocutor = users ? getUserById(users, chat.interlocutorId) : null;
 
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (!user) return;
+
+		if (chat.seenAt && chat.seenAt / 1000 >= chat.updatedAt / 1000) {
+			// do nothing
+		} else {
+			if (chat.notifiedAt && chat.notifiedAt / 1000 >= chat.updatedAt / 1000) {
+				// do nothing
+			} else {
+				notifyWithAsound(user.uid, chat.id, "chats");
+			}
+		}
+	}, [chat, user]);
 
 	if (!interlocutor) return null;
 
 	return (
 		<li
 			className={`p-2 mb-1 ${
-				chat.seenAt && chat.seenAt >= chat.updatedAt ? "" : "bg-dark rounded"
+				chat.seenAt && chat.seenAt / 1000 >= chat.updatedAt / 1000
+					? ""
+					: "bg-dark rounded"
 			}`}
 			onClick={() => navigate(`/chats/${chat.id}`)}
 			style={{
@@ -58,7 +77,7 @@ export default function ChatListItem({ chat }: { chat: UserChat }) {
 			</div>
 
 			<div>
-				{!(chat.seenAt && chat.seenAt >= chat.updatedAt) && (
+				{!(chat.seenAt && chat.seenAt / 1000 >= chat.updatedAt / 1000) && (
 					<Badge bg={"success"}>new message/s</Badge>
 				)}
 			</div>

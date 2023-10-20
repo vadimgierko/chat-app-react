@@ -14,6 +14,8 @@ import {
 	writeBatch,
 } from "firebase/firestore";
 
+import newMessageSound from "../assets/audio/notification-sound-vibraphone-pixabay.mp3";
+
 //==================== helpers ======================//
 
 function getTimestamp() {
@@ -63,6 +65,14 @@ function getUserById(users: FirestoreUser[], uid: string) {
 	return user;
 }
 
+function getUserChatById(chatId: string, userChats: UserChat[]) {
+	const userChat = userChats.find((chat) => chat.id === chatId);
+
+	if (!userChat) return null;
+
+	return userChat;
+}
+
 //====================== auth =======================//
 
 async function signIn() {
@@ -103,7 +113,50 @@ async function logOut(user: User) {
 	}
 }
 
-//====================== other ======================//
+//================ notifications ===================//
+
+async function notifyWithAsound(
+	userId: string,
+	chatId: string,
+	enviroment: "chat" | "chats"
+) {
+	console.log("...notifying...");
+	// Play the notification sound:
+	const audio = new Audio(newMessageSound);
+
+	const volumeLevel = 0.2; // Set the volume level (0.0 to 1.0)
+	audio.volume = volumeLevel;
+
+	audio.play();
+
+	const userChatRef = doc(firestore, "user-chats", userId);
+
+	if (enviroment === "chats") {
+		// only notify (DO NOT UPDATE SEEN AT)
+		try {
+			await updateDoc(userChatRef, {
+				[`${chatId}.notifiedAt`]: getTimestamp() + 1000,
+			});
+		} catch (error) {
+			console.error(error);
+		}
+	} else if (enviroment === "chat") {
+		const timestamp = getTimestamp() + 1000;
+		// notify & update seenAt
+		try {
+			await updateDoc(userChatRef, {
+				[`${chatId}.notifiedAt`]: timestamp,
+				[`${chatId}.seenAt`]: timestamp,
+			});
+		} catch (error) {
+			console.error(error);
+		}
+	} else {
+		return;
+	}
+}
+
+//====================== CRUD ======================//
 
 /**
  * initialize/ create new chat, add it to logged user & interlocutor user-chats & return chat id
@@ -141,6 +194,7 @@ async function initChat(userId: string, interlocutorId: string) {
 			createdAt: timestamp,
 			seenAt: null,
 			updatedAt: timestamp,
+			notifiedAt: timestamp, // user creates chat, so he doesn't need to be notified about this
 		};
 
 		const loggedUserChatsRef = doc(firestore, "user-chats", userId);
@@ -153,6 +207,7 @@ async function initChat(userId: string, interlocutorId: string) {
 			createdAt: timestamp,
 			seenAt: null,
 			updatedAt: timestamp,
+			notifiedAt: null, // interlocutor is not notified about chat creation at the moment
 		};
 
 		const interlocutorUserChatsRef = doc(
@@ -205,7 +260,8 @@ async function sendMessage(
 		const loggedUserChatsRef = doc(firestore, "user-chats", senderId);
 		batch.update(loggedUserChatsRef, {
 			[`${chatId}.updatedAt`]: timestamp,
-			[`${chatId}.seenAt`]: timestamp,
+			[`${chatId}.seenAt`]: timestamp, // user sends msg, so he already saw this msg
+			[`${chatId}.notifiedAt`]: timestamp, // user sends msg, so he doesn't need to be notified about this msg
 		});
 
 		// update interlocutor /user-chats:
@@ -228,9 +284,11 @@ export {
 	getDateFromTimestamp,
 	getTimestamp,
 	getUserById,
+	getUserChatById,
 	initChat,
 	isUserOnline,
 	logOut,
+	notifyWithAsound,
 	sendMessage,
 	signIn,
 };

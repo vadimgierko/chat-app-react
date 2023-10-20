@@ -1,10 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useUser from "../../../../context/useUser";
 import { Message as IMessage } from "../../../../interfaces";
 import {
 	getDateFromTimestamp,
 	getUserById,
 	isUserOnline,
+	notifyWithAsound,
 } from "../../../../lib";
 import useUsers from "../../../../context/useUsers";
 import { BsPersonCircle } from "react-icons/bs";
@@ -12,29 +13,58 @@ import { BsPersonCircle } from "react-icons/bs";
 export default function Message({
 	message,
 	isLast = false,
+	lastlyNotifiedAt,
 }: {
 	message: IMessage;
 	isLast: boolean;
+	lastlyNotifiedAt: number | null;
 }) {
 	const messageRef = useRef<HTMLDivElement | null>(null);
 	const { user } = useUser();
 	const { users } = useUsers();
 	const interlocutor = getUserById(users!, message.senderId);
 
-	// scroll to the last message:
+	// this needed to prevent slight differences in miliseconds:
+	const lastlyNotifiedAtInSeconds = lastlyNotifiedAt
+		? Math.floor(lastlyNotifiedAt / 1000)
+		: Math.floor(message.createdAt / 1000) - 0.1;
+	const messageCreatedAtInSeconds = Math.floor(message.createdAt / 1000);
+
+	// 1. scroll to the last message;
+	// 2. if this is interlocutor message => notify
 	useEffect(() => {
+		if (!user) return;
+		// 1. scroll to the last message:
 		if (isLast) {
+			// 2. if this is interlocutor message => notify:
+			if (
+				message.receiverId === user.uid &&
+				lastlyNotifiedAtInSeconds < messageCreatedAtInSeconds
+			) {
+				notifyWithAsound(user.uid, message.chatId, "chat");
+			}
+
 			if (messageRef.current) {
 				messageRef.current.scrollIntoView();
+
+				// works for Alina:
+				// if (message.receiverId === user.uid) {
+				// 	notifyWithAsound(user.uid, message.chatId);
+				// }
 			}
 		}
-	}, [isLast]);
+	}, [
+		isLast,
+		message,
+		user,
+		lastlyNotifiedAtInSeconds,
+		messageCreatedAtInSeconds,
+	]);
 
 	if (!user) return null;
 
 	return (
 		<div
-			ref={messageRef}
 			className="message-container"
 			style={{
 				textAlign: message.senderId === user.uid ? "end" : "start",
@@ -110,6 +140,7 @@ export default function Message({
 						}}
 					>
 						{message.content}
+						<span ref={messageRef} />
 					</p>
 				</div>
 			</div>
