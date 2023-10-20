@@ -1,7 +1,18 @@
-import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import {
+	GoogleAuthProvider,
+	User,
+	signInWithPopup,
+	signOut,
+} from "firebase/auth";
 import { auth, firestore } from "../firebaseConfig";
 import { Chat, FirestoreUser, Message, UserChat } from "../interfaces";
-import { arrayUnion, collection, doc, writeBatch } from "firebase/firestore";
+import {
+	arrayUnion,
+	collection,
+	doc,
+	updateDoc,
+	writeBatch,
+} from "firebase/firestore";
 
 //==================== helpers ======================//
 
@@ -28,6 +39,18 @@ function getDateFromTimestamp(timestamp: number) {
 	const formattedDate = `${dayStr}.${monthStr}.${year} ${hoursStr}:${minutesStr}`;
 
 	return formattedDate;
+}
+
+function isUserOnline(user: FirestoreUser) {
+	if (user.signedInAt) {
+		if (user.signedOutAt) {
+			return user.signedInAt > user.signedOutAt;
+		} else {
+			return true;
+		}
+	} else {
+		return false;
+	}
 }
 
 function getUserById(users: FirestoreUser[], uid: string) {
@@ -61,8 +84,23 @@ async function signIn() {
 		});
 }
 
-async function logOut() {
-	return signOut(auth);
+async function logOut(user: User) {
+	try {
+		console.log(
+			`User is logging out... Updating ${user.uid} user signOutAt timestamp...`
+		);
+		// set user signOutAt timestamp:
+		const firestoreUserRef = doc(firestore, "users", user.uid);
+		await updateDoc(firestoreUserRef, { signedOutAt: getTimestamp() });
+
+		console.log(`Log out user ${user.uid}.`);
+
+		await signOut(auth);
+
+		console.log("user logged out...");
+	} catch (error) {
+		console.error(error);
+	}
 }
 
 //====================== other ======================//
@@ -191,6 +229,7 @@ export {
 	getTimestamp,
 	getUserById,
 	initChat,
+	isUserOnline,
 	logOut,
 	sendMessage,
 	signIn,

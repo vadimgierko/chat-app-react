@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { auth, firestore } from "../firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, writeBatch } from "firebase/firestore";
+import { doc, getDoc, updateDoc, writeBatch } from "firebase/firestore";
 import { User } from "firebase/auth";
 import { FirestoreUser, UserChat } from "../interfaces";
 import { getTimestamp } from "../lib";
@@ -50,6 +50,8 @@ export function UserProvider({ children }: UserProviderProps) {
 				uid,
 				createdAt: timestamp,
 				updatedAt: timestamp,
+				signedInAt: null, // user is logged already, but this will be changed in a second in onAuthStateChange
+				signedOutAt: null,
 			};
 
 			const newUserChats: {
@@ -72,8 +74,21 @@ export function UserProvider({ children }: UserProviderProps) {
 		}
 
 		const unsubscribe = onAuthStateChanged(auth, (u) => {
+			async function updateUserSignedInAtTimestamp(uid: string) {
+				try {
+					console.log(`Updating ${uid} user signedInAtTimestamp...`);
+					const firestoreUserRef = doc(firestore, "users", uid);
+					await updateDoc(firestoreUserRef, {
+						signedInAt: getTimestamp(),
+					});
+				} catch (error) {
+					console.error(error);
+				}
+			}
+
 			if (u) {
 				setUser(u);
+				updateUserSignedInAtTimestamp(u.uid);
 				addUserIfDoesntExist(u);
 			} else {
 				setUser(null);
