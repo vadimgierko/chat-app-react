@@ -4,8 +4,10 @@ import { getDateFromTimestamp, isUserOnline } from "../../../lib";
 
 export default function ChatHeader({
 	interlocutor,
+	messagesNum,
 }: {
 	interlocutor: FirestoreUser;
+	messagesNum: number;
 }) {
 	return (
 		<>
@@ -41,7 +43,12 @@ export default function ChatHeader({
 				</div>
 
 				<div>
-					<div>{interlocutor.displayName}</div>
+					<div>
+						{interlocutor.displayName}{" "}
+						{messagesNum > 0 && (
+							<span className="text-secondary">({messagesNum})</span>
+						)}
+					</div>
 					{!isUserOnline(interlocutor) && interlocutor.signedOutAt && (
 						<div className="text-secondary" style={{ fontSize: 10 }}>
 							Last seen at {getDateFromTimestamp(interlocutor.signedOutAt)}

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import useUsers from "../../context/useUsers";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { firestore } from "../../firebaseConfig";
 import useUser from "../../context/useUser";
@@ -10,7 +10,6 @@ import { Chat as IChat } from "../../interfaces";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
 import ChatHeader from "./ChatHeader";
-import Container from "react-bootstrap/Container";
 
 export default function Chat() {
 	const { id: chatId } = useParams();
@@ -92,7 +91,10 @@ export default function Chat() {
 
 	return (
 		<div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-			<ChatHeader interlocutor={interlocutor} />
+			<ChatHeader
+				interlocutor={interlocutor}
+				messagesNum={chat.messages.length}
+			/>
 
 			<ChatMessages chatId={chat.id} messages={chat.messages} />
 
