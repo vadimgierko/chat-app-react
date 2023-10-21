@@ -22,7 +22,7 @@ import { MaxWidthContext } from "../../../App";
 import { useContext } from "react";
 
 const testUserEmail = "testuser@gmail.com";
-const testUserPassword = "spss2020";
+const testUserPassword = "";
 
 export default function NavigationBar() {
 	const { user } = useUser();
@@ -124,7 +124,7 @@ export default function NavigationBar() {
 							</>
 						)}
 
-						{!user && (
+						{/* {!user && (
 							<Button
 								variant="outline-secondary"
 								onClick={() =>
@@ -137,7 +137,7 @@ export default function NavigationBar() {
 							>
 								sign in as test user
 							</Button>
-						)}
+						)} */}
 					</Nav>
 				</Navbar.Collapse>
 			</Container>
