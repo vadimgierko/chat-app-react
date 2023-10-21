@@ -11,7 +11,7 @@ import { AiOutlineLogout, AiOutlinePlusSquare } from "react-icons/ai";
 //=====================================================
 import logo from "../../../icons/logo.svg";
 import { BsPersonCircle } from "react-icons/bs";
-import { logOut } from "../../../lib/index";
+import { logOut, signIn } from "../../../lib/index";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, firestore } from "../../../firebaseConfig";
 import useUsers from "../../../context/useUsers";

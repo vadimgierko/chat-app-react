@@ -12,7 +12,7 @@ body {
 }
 
 main {
-  height: calc(100vh - 99px)
+  height: calc(100vh - 110px)
 }
 
 /* Hide the vertical scrollbar */
@@ -45,4 +45,12 @@ h1 {
 
 .icon-btn:hover {
   color: rgba(250, 250, 250, 0.6)
+}
+
+.footer-icon-link {
+  color: rgb(128, 128, 128)
+}
+
+.footer-icon-link:hover {
+  color: rgb(193, 192, 192)
 }

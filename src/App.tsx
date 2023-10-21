@@ -38,7 +38,7 @@ function App() {
 					as="main"
 					style={{
 						maxWidth: maxWidth,
-						marginTop: "70px",
+						marginTop: "80px",
 						overflowY: "auto",
 						display: "flex",
 						flexDirection: "column",
