@@ -12,7 +12,7 @@ body {
 }
 
 main {
-  height: calc(100vh - 110px)
+  height: calc(100dvh - 110px)
 }
 
 /* Hide the vertical scrollbar */

@@ -31,7 +31,7 @@ export default function Layout() {
 					backgroundColor: "rgb(23, 24, 27)",
 					display: "flex",
 					flexDirection: "column",
-					minHeight: "100vh",
+					minHeight: "100dvh",
 				}}
 			>
 				<NavigationBar />

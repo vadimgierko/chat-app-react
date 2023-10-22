@@ -13,7 +13,7 @@ export default function Chats() {
 	);
 
 	return (
-		<div className="user-chats-page">
+		<div>
 			<h1>Your chats</h1>
 			<hr />
 			{!userChats || !userChats.length ? (
