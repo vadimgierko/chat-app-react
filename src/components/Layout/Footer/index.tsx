@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { MaxWidthContext } from "../../../App";
 import { Container } from "react-bootstrap";
 import { BsGithub, BsGlobe } from "react-icons/bs";
 import { AiOutlineGithub } from "react-icons/ai";
+import { MaxWidthContext } from "..";
 
 export default function Footer() {
 	const maxWidth = useContext(MaxWidthContext);
@@ -33,7 +33,7 @@ export default function Footer() {
 			</a>{" "}
 			|{" "}
 			<a
-				className="footer-icon-link ms-1"
+				className="footer-icon-link mx-1"
 				href="https://github.com/vadimgierko"
 				target="_blank"
 				rel="noreferrer"
@@ -53,5 +53,3 @@ export default function Footer() {
 		</Container>
 	);
 }
-
-//https://github.com/vadimgierko/chat-app-react

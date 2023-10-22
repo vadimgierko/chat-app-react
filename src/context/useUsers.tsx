@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { firestore } from "../firebaseConfig";
-import { collection, getDocs, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { FirestoreUser } from "../interfaces";
 import useUser from "./useUser";
 
@@ -51,29 +51,6 @@ export function UsersProvider({ children }: UsersProviderProps) {
 			// Unsubscribe from the listener when the component unmounts
 			unsubscribe();
 		};
-
-		// FETCH USERS ONLY ONCE:
-
-		// async function fetchUsers() {
-		// 	const querySnapshot = await getDocs(collection(firestore, "users"));
-
-		// 	const fetchedUsers: FirestoreUser[] = [];
-
-		// 	querySnapshot.forEach((doc) => {
-		// 		// doc.data() is never undefined for query doc snapshots
-		// 		// console.log(doc.id, " => ", doc.data());
-		// 		fetchedUsers.push(doc.data() as FirestoreUser);
-		// 	});
-
-		// 	console.log({ fetchedUsers });
-		// 	setUsers(fetchedUsers);
-		// }
-
-		// if (user) {
-		// 	fetchUsers();
-		// } else {
-		// 	setUsers(null);
-		// }
 	}, [user]);
 
 	useEffect(() => console.log({ users }), [users]);

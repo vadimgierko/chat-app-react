@@ -5,34 +5,9 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Users from "./pages/Users";
 import { UserProvider } from "./context/useUser";
 import { UsersProvider } from "./context/useUsers";
-import Chat from "./pages/Chat";
-import Chats from "./pages/Chats";
 import { UserChatsProvider } from "./context/useUserChats";
-
-const router = createBrowserRouter([
-	{
-		path: "/",
-		element: <App />,
-		children: [
-			{
-				path: "users",
-				element: <Users />,
-			},
-			{
-				path: "chats",
-				element: <Chats />,
-			},
-			{
-				path: "chats/:id",
-				element: <Chat />,
-			},
-		],
-	},
-]);
 
 const root = ReactDOM.createRoot(
 	document.getElementById("root") as HTMLElement
@@ -42,7 +17,7 @@ root.render(
 		<UserProvider>
 			<UsersProvider>
 				<UserChatsProvider>
-					<RouterProvider router={router} />
+					<App />
 				</UserChatsProvider>
 			</UsersProvider>
 		</UserProvider>
