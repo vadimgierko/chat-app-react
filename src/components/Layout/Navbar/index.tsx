@@ -18,8 +18,8 @@ import useUsers from "../../../context/useUsers";
 import useUserChats from "../../../context/useUserChats";
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
-import { MaxWidthContext } from "../../../App";
 import { useContext } from "react";
+import { MaxWidthContext } from "..";
 
 const testUserEmail = "testuser@gmail.com";
 const testUserPassword = "";

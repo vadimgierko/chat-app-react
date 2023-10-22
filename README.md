@@ -12,6 +12,8 @@ The app is deployed on Vercel & available <a href="https://vg-chat-app-react.ver
 
 Enjoy & invite your friends!
 
+PS. If you don't know any user of the app, feel free to start the chat with me (Vadim Gierko) to test the app & talk to the creator 😉
+
 ## Tech Stack
 
 - **React 18.2.0** (I've used CRA PWA TS template to init this project)

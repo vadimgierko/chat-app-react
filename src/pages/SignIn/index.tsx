@@ -12,9 +12,8 @@ export default function SignIn() {
 
 			<section style={{ maxWidth: 375, margin: "auto" }}>
 				<p>
-					This app allows you to <strong>sign in/up with Google account</strong>{" "}
-					and start a chat with registered users from the users list for{" "}
-					<strong>free</strong>.
+					<strong>Sign in/up with Google account</strong> and start a chat with
+					registered users from the users list for <strong>free</strong>.
 				</p>
 				<p>
 					You are able to see users' & interlocutors'{" "}
@@ -22,7 +21,7 @@ export default function SignIn() {
 					<strong>last seen</strong>.
 				</p>
 				<p>
-					You will also get a <strong>visual & sound notification</strong> about
+					You'll also get a <strong>visual & sound notification</strong> about
 					new/ unseen messages.
 				</p>
 				<p>
@@ -30,11 +29,16 @@ export default function SignIn() {
 					<strong>
 						app can be optionally added to the desktop or phone screen
 					</strong>{" "}
-					& will <strong>automatically update</strong> to the newest version
-					immediately when it will be available (no manual reloading or removing
-					cookies needed).
+					& will <strong>automatically search for updates</strong>.
 				</p>
 				<p>Enjoy & invite your friends!</p>
+
+				<hr className="text-secondary" />
+
+				<p className="text-secondary">
+					If you don't know any user in the app, feel free to start the chat
+					with me (Vadim Gierko) to test the app & talk to the creator 😉
+				</p>
 			</section>
 		</div>
 	);
