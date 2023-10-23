@@ -54,3 +54,11 @@ h1 {
 .footer-icon-link:hover {
   color: rgb(193, 192, 192)
 }
+
+.custom-pre {
+  white-space: pre-wrap;
+}
+
+.custom-pre a {
+  word-wrap: break-word;
+}
