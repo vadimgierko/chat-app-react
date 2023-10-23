@@ -16,10 +16,11 @@ export default function ChatInput({
 			<InputGroup>
 				<Form.Control
 					as="textarea"
+					// rows={3}
 					className="bg-dark text-light"
 					value={input}
 					onChange={(e) => setInput(e.target.value)}
-					placeholder="type something..."
+					placeholder="type something... you can use links & Enter for new line"
 				/>
 				<Button
 					variant="primary"

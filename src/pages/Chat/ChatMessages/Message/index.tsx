@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import useUser from "../../../../context/useUser";
 import { Message as IMessage } from "../../../../interfaces";
 import {
@@ -9,6 +9,7 @@ import {
 } from "../../../../lib";
 import useUsers from "../../../../context/useUsers";
 import { BsPersonCircle } from "react-icons/bs";
+import dompurify from "dompurify";
 
 export default function Message({
 	message,
@@ -30,6 +31,24 @@ export default function Message({
 		: Math.floor(message.createdAt / 1000) - 0.1;
 	const messageCreatedAtInSeconds = Math.floor(message.createdAt / 1000);
 
+	function convertTextWithClickableLinks(text: string) {
+		const urlRegex = /(https?:\/\/[^\s]+)/g;
+		const linkifiedText = text.replace(
+			urlRegex,
+			'<a href="$1" target="_blank">$1</a>'
+		);
+		// console.log({ linkifiedText });
+		return linkifiedText;
+	}
+
+	function sanitizeHTML(html: string) {
+		const sanitized = dompurify.sanitize(html, {
+			ALLOWED_TAGS: ["a"],
+			ALLOWED_ATTR: ["href", "target"], // Allow the "target" attribute for _blank
+		});
+		return sanitized;
+	}
+
 	// 1. scroll to the last message;
 	// 2. if this is interlocutor message => notify
 	useEffect(() => {
@@ -46,11 +65,6 @@ export default function Message({
 
 			if (messageRef.current) {
 				messageRef.current.scrollIntoView();
-
-				// works for Alina:
-				// if (message.receiverId === user.uid) {
-				// 	notifyWithAsound(user.uid, message.chatId);
-				// }
 			}
 		}
 	}, [
@@ -131,17 +145,28 @@ export default function Message({
 						marginBottom: "1em",
 					}}
 				>
-					<p
-						className="message-content"
+					<pre
+						className="custom-pre text-start"
 						style={{
 							paddingTop: "0.5em",
 							paddingLeft: "0.5em",
 							paddingRight: "0.5em",
+							// THIS BELOW IS NEEDED TO STYLE PRE TEXT AS NORMAL BOOTSTRAP TEXT:
+							fontFamily: "inherit",
+							fontSize: "inherit",
+							// THIS BELOW IS NEEDED TO WRAP THE REALLY LONG LINES, BUT PRESERVE MULTILINE TEXT:
+							// THIS IS IN CSS FILE !!! :
+							// whiteSpace: "pre-wrap",
+							// wordWrap: "break-word", // Add this line to enable word wrapping => only in case of <a>
 						}}
-					>
-						{message.content}
-						<span ref={messageRef} />
-					</p>
+						dangerouslySetInnerHTML={{
+							__html: sanitizeHTML(
+								convertTextWithClickableLinks(message.content)
+							),
+						}}
+					></pre>
+
+					<span ref={messageRef} />
 				</div>
 			</div>
 		</div>

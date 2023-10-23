@@ -10,6 +10,7 @@ import { Chat as IChat } from "../../interfaces";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
 import ChatHeader from "./ChatHeader";
+import { Button } from "react-bootstrap";
 
 export default function Chat() {
 	const { id: chatId } = useParams();
@@ -40,8 +41,21 @@ export default function Chat() {
 		if (chatId) {
 			console.log("fetching chat messages...");
 			unsubscribe = onSnapshot(doc(firestore, "chats", chatId), (doc) => {
+				const maxDocumentSize = 1048576; // 1 MiB in bytes
+
 				if (doc.exists()) {
 					const data = doc.data() as IChat;
+
+					// check the aproximate size of doc & % of max size taken:
+					const dataSize = JSON.stringify(data).length * 2; // Assuming 2 bytes per character (but remember that special chars, like emoji can be 4 bytes per char!!!)
+					const percentageUsed = (dataSize / maxDocumentSize) * 100;
+					console.log("Document size in bytes:", dataSize);
+					console.log(
+						"Percentage of maximum doc size:",
+						percentageUsed.toFixed(2) + "%"
+					);
+					//================================================================================//
+
 					setChat(data);
 				} else {
 					console.error("There is no such chat doc...");
