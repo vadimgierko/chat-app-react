@@ -50,16 +50,8 @@ export function UserProvider({ children }: UserProviderProps) {
 				uid,
 				createdAt: timestamp,
 				updatedAt: timestamp,
-				signedInAt: null, // user is logged already, but this will be changed in a second in onAuthStateChange
+				signedInAt: timestamp,
 				signedOutAt: null,
-			};
-
-			const newUserChats: {
-				uid: string;
-				chats: UserChat[];
-			} = {
-				uid,
-				chats: [],
 			};
 
 			const batch = writeBatch(firestore);
@@ -68,7 +60,7 @@ export function UserProvider({ children }: UserProviderProps) {
 			batch.set(newUserRef, newUser);
 
 			const newUserChatsRef = doc(firestore, "user-chats", uid);
-			batch.set(newUserChatsRef, newUserChats);
+			batch.set(newUserChatsRef, {}); // user-chats is empty {} which will be filled [chatId]: UserChat in the future
 
 			await batch.commit();
 		}

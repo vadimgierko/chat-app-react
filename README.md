@@ -6,7 +6,9 @@ You are able to see users' & interlocutors' **online status** & when they were *
 
 You will also get a **visual & sound notification** about new/ unseen messages.
 
-The app can be optionally added to the desktop or phone screen & will automatically update to the newest version immediately when it will be available (no manual reloading or removing cookies needed).
+You can send **multiline messages** & add **clickable links** to your messages, which will be opened in a different tab.
+
+The **app can be** optionally **added to the** desktop or phone **screen** & will notify you about updates after reloading the app or closing the tab.
 
 The app is deployed on Vercel & available <a href="https://vg-chat-app-react.vercel.app/" target="_blank">here</a>.
 

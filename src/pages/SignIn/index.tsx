@@ -25,11 +25,14 @@ export default function SignIn() {
 					new/ unseen messages.
 				</p>
 				<p>
-					The{" "}
-					<strong>
-						app can be optionally added to the desktop or phone screen
-					</strong>{" "}
-					& will <strong>automatically search for updates</strong>.
+					You can send <strong>multiline messages</strong> & add{" "}
+					<strong>clickable links</strong> to your messages, which will be
+					opened in a different tab.
+				</p>
+				<p>
+					The <strong>app can be added to the desktop/ phone screen</strong> &
+					will <strong>notify about updates</strong> when app will be reloaded
+					or tab will be closed.
 				</p>
 				<p>Enjoy & invite your friends!</p>
 
