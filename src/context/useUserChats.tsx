@@ -6,7 +6,8 @@ import { UserChat } from "../interfaces";
 
 const UserChatsContext = createContext<{
 	userChats: UserChat[] | null;
-}>({ userChats: null });
+	notSeenUpdatedChats: UserChat[];
+}>({ userChats: null, notSeenUpdatedChats: [] });
 
 /**
  *
@@ -31,6 +32,16 @@ interface UserChatsProviderProps {
 export function UserChatsProvider({ children }: UserChatsProviderProps) {
 	const { user } = useUser();
 	const [userChats, setUserChats] = useState<UserChat[] | null>(null); // if not fetched or doc doesn't exist
+
+	// NOTE:
+	//
+	// We do not need to check, if chat was updated by logged user,
+	// because sendMessage() takes care of that
+	// by assigning same timestamp to updatedAt, seenAt & notifiedAt, when logged user sends message,
+	// what means that c.seenAt < c.updatedAt only when interlocutor send the last message.
+	const notSeenUpdatedChats: UserChat[] = userChats
+		? userChats.filter((c) => c.seenAt / 1000 < c.updatedAt / 1000)
+		: [];
 
 	useEffect(() => {
 		let unsubscribe;
@@ -60,10 +71,11 @@ export function UserChatsProvider({ children }: UserChatsProviderProps) {
 		return unsubscribe;
 	}, [user]);
 
-	useEffect(() => console.log({ userChats }), [userChats]);
+	// useEffect(() => console.log({ notSeenUpdatedChats }), [notSeenUpdatedChats]);
 
 	const value = {
 		userChats,
+		notSeenUpdatedChats,
 	};
 
 	return (

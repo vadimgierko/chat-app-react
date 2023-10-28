@@ -6,25 +6,25 @@ import { useNavigate } from "react-router-dom";
 import { Badge } from "react-bootstrap";
 import { useEffect } from "react";
 import useUser from "../../../../context/useUser";
+import useUserChats from "../../../../context/useUserChats";
 
 export default function ChatListItem({ chat }: { chat: UserChat }) {
 	const { user } = useUser();
 	const { users } = useUsers();
 	const interlocutor = users ? getUserById(users, chat.interlocutorId) : null;
 
+	const { notSeenUpdatedChats } = useUserChats();
+	const shouldNotifyVisually = notSeenUpdatedChats.find(
+		(c) => c.id === chat.id
+	);
+
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (!user) return;
 
-		if (chat.seenAt && chat.seenAt / 1000 >= chat.updatedAt / 1000) {
-			// do nothing
-		} else {
-			if (chat.notifiedAt && chat.notifiedAt / 1000 >= chat.updatedAt / 1000) {
-				// do nothing
-			} else {
-				notifyWithAsound(user.uid, chat.id, "chats");
-			}
+		if (chat.notifiedAt / 1000 < chat.updatedAt / 1000) {
+			notifyWithAsound(user.uid, chat.id, "chats");
 		}
 	}, [chat, user]);
 
@@ -33,9 +33,7 @@ export default function ChatListItem({ chat }: { chat: UserChat }) {
 	return (
 		<li
 			className={`p-2 mb-1 ${
-				chat.seenAt && chat.seenAt / 1000 >= chat.updatedAt / 1000
-					? ""
-					: "bg-dark rounded"
+				shouldNotifyVisually && "bg-dark text-light rounded"
 			}`}
 			onClick={() => navigate(`/chats/${chat.id}`)}
 			style={{
@@ -77,9 +75,7 @@ export default function ChatListItem({ chat }: { chat: UserChat }) {
 			</div>
 
 			<div>
-				{!(chat.seenAt && chat.seenAt / 1000 >= chat.updatedAt / 1000) && (
-					<Badge bg={"success"}>new message/s</Badge>
-				)}
+				{shouldNotifyVisually && <Badge bg={"success"}>new message/s</Badge>}
 			</div>
 		</li>
 	);
