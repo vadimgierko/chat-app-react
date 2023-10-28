@@ -53,7 +53,7 @@ export function UsersProvider({ children }: UsersProviderProps) {
 		};
 	}, [user]);
 
-	useEffect(() => console.log({ users }), [users]);
+	// useEffect(() => console.log({ users }), [users]);
 
 	const value = {
 		users,

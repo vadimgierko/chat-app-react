@@ -17,7 +17,7 @@ import { auth, firestore } from "../../../firebaseConfig";
 import useUsers from "../../../context/useUsers";
 import useUserChats from "../../../context/useUserChats";
 import { useNavigate } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import { Badge, Button } from "react-bootstrap";
 import { useContext } from "react";
 import { MaxWidthContext } from "..";
 
@@ -27,7 +27,7 @@ const testUserPassword = "";
 export default function NavigationBar() {
 	const { user } = useUser();
 	const { users } = useUsers();
-	const { userChats } = useUserChats();
+	const { userChats, notSeenUpdatedChats } = useUserChats();
 
 	const maxWidth = useContext(MaxWidthContext);
 
@@ -37,14 +37,7 @@ export default function NavigationBar() {
 	const avatarSize = 30;
 
 	return (
-		<Navbar
-			collapseOnSelect
-			expand="sm"
-			bg="dark"
-			variant="dark"
-			fixed="top"
-			//className="shadow do-not-display-when-print"
-		>
+		<Navbar collapseOnSelect expand="sm" bg="dark" variant="dark" fixed="top">
 			<Container style={{ maxWidth: maxWidth }}>
 				<LinkContainer to="/">
 					<Navbar.Brand>
@@ -82,6 +75,9 @@ export default function NavigationBar() {
 								<LinkContainer to="/chats">
 									<Nav.Link>
 										chats {userChats ? `(${userChats.length})` : ""}
+										{notSeenUpdatedChats.length ? (
+											<Badge className="bg-success ms-1">new</Badge>
+										) : null}
 									</Nav.Link>
 								</LinkContainer>
 

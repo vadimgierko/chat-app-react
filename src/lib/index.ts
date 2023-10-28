@@ -192,7 +192,7 @@ async function initChat(userId: string, interlocutorId: string) {
 			id,
 			interlocutorId,
 			createdAt: timestamp,
-			seenAt: null,
+			seenAt: timestamp, // it should be to prevent notifying the user about new empty chat
 			updatedAt: timestamp,
 			notifiedAt: timestamp, // user creates chat, so he doesn't need to be notified about this
 		};
@@ -205,9 +205,9 @@ async function initChat(userId: string, interlocutorId: string) {
 			id,
 			interlocutorId: userId,
 			createdAt: timestamp,
-			seenAt: null,
+			seenAt: timestamp, // it should be to prevent notifying the user about new empty chat
 			updatedAt: timestamp,
-			notifiedAt: null, // interlocutor is not notified about chat creation at the moment
+			notifiedAt: timestamp, // it should be to prevent notifying the user about new empty chat
 		};
 
 		const interlocutorUserChatsRef = doc(
