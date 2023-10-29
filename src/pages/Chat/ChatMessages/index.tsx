@@ -1,7 +1,5 @@
 import useUser from "../../../context/useUser";
-import useUserChats from "../../../context/useUserChats";
 import { Message as IMessage } from "../../../interfaces";
-import { getUserChatById } from "../../../lib";
 import Message from "./Message";
 
 export default function ChatMessages({
@@ -12,8 +10,6 @@ export default function ChatMessages({
 	messages: IMessage[];
 }) {
 	const { user } = useUser();
-	const { userChats } = useUserChats();
-	const userChat = userChats ? getUserChatById(chatId, userChats) : null;
 
 	if (!user) return null;
 
@@ -27,7 +23,6 @@ export default function ChatMessages({
 					message={m}
 					key={m.content + i}
 					isLast={i === messages.length - 1}
-					lastlyNotifiedAt={userChat ? userChat.notifiedAt : null}
 				/>
 			))}
 		</div>

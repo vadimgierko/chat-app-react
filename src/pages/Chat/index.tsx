@@ -1,16 +1,15 @@
 import { useParams } from "react-router-dom";
 import useUsers from "../../context/useUsers";
 import { useEffect, useState } from "react";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { firestore } from "../../firebaseConfig";
 import useUser from "../../context/useUser";
-import { getTimestamp, sendMessage } from "../../lib";
+import { sendMessage } from "../../lib";
 import useUserChats from "../../context/useUserChats";
 import { Chat as IChat } from "../../interfaces";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
 import ChatHeader from "./ChatHeader";
-import { Button } from "react-bootstrap";
 
 export default function Chat() {
 	const { id: chatId } = useParams();
@@ -67,36 +66,6 @@ export default function Chat() {
 
 		return unsubscribe;
 	}, [chatId]);
-
-	// when user visits chat,
-	// update chat.seenAt:
-	useEffect(() => {
-		async function updateChatSeenAt() {
-			if (!user || !chatId) return;
-
-			console.log("Updating chat's seenAt prop...");
-
-			const timestamp = getTimestamp();
-
-			try {
-				const userChatRef = doc(firestore, "user-chats", user.uid);
-
-				await updateDoc(userChatRef, {
-					[`${chatId}.seenAt`]: timestamp,
-				});
-			} catch (error) {
-				console.log(error);
-				alert(error);
-			}
-		}
-
-		if (user && chatId) {
-			// if it's set, than it will not change, so it runs once:
-			updateChatSeenAt();
-		}
-	}, [chatId, user]);
-
-	useEffect(() => console.log({ chat }), [chat]);
 
 	if (!chat) return <p style={{ color: "red" }}>There is no such chat...</p>;
 	if (!interlocutor)

@@ -1,15 +1,12 @@
 import { BsPersonCircle } from "react-icons/bs";
 import useUsers from "../../../../context/useUsers";
 import { UserChat } from "../../../../interfaces";
-import { getUserById, isUserOnline, notifyWithAsound } from "../../../../lib";
+import { getUserById, isUserOnline } from "../../../../lib";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "react-bootstrap";
-import { useEffect } from "react";
-import useUser from "../../../../context/useUser";
 import useUserChats from "../../../../context/useUserChats";
 
 export default function ChatListItem({ chat }: { chat: UserChat }) {
-	const { user } = useUser();
 	const { users } = useUsers();
 	const interlocutor = users ? getUserById(users, chat.interlocutorId) : null;
 
@@ -19,14 +16,6 @@ export default function ChatListItem({ chat }: { chat: UserChat }) {
 	);
 
 	const navigate = useNavigate();
-
-	useEffect(() => {
-		if (!user) return;
-
-		if (chat.notifiedAt / 1000 < chat.updatedAt / 1000) {
-			notifyWithAsound(user.uid, chat.id, "chats");
-		}
-	}, [chat, user]);
 
 	if (!interlocutor) return null;
 

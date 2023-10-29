@@ -3,6 +3,7 @@ import { firestore } from "../firebaseConfig";
 import { doc, onSnapshot } from "firebase/firestore";
 import useUser from "./useUser";
 import { UserChat } from "../interfaces";
+import { notifyWithAsound } from "../lib";
 
 const UserChatsContext = createContext<{
 	userChats: UserChat[] | null;
@@ -40,7 +41,7 @@ export function UserChatsProvider({ children }: UserChatsProviderProps) {
 	// by assigning same timestamp to updatedAt, seenAt & notifiedAt, when logged user sends message,
 	// what means that c.seenAt < c.updatedAt only when interlocutor send the last message.
 	const notSeenUpdatedChats: UserChat[] = userChats
-		? userChats.filter((c) => c.seenAt / 1000 < c.updatedAt / 1000)
+		? userChats.filter((c) => c.seenAt < c.updatedAt) // c.seenAt / 1000 < c.updatedAt / 1000
 		: [];
 
 	useEffect(() => {
@@ -59,6 +60,18 @@ export function UserChatsProvider({ children }: UserChatsProviderProps) {
 							(a, b) => b.updatedAt - a.updatedAt
 						);
 						setUserChats(chatsSortedByUpdateTime);
+
+						// notify with the sound if needed:
+						const notNotifiedChats: UserChat[] = chats.filter(
+							(c) => c.notifiedAt < c.updatedAt
+						);
+
+						if (notNotifiedChats.length) {
+							notifyWithAsound(
+								user.uid,
+								notNotifiedChats.map((c) => c.id)
+							);
+						}
 					} else {
 						console.error("There is no user chats doc...");
 					}
@@ -70,8 +83,6 @@ export function UserChatsProvider({ children }: UserChatsProviderProps) {
 
 		return unsubscribe;
 	}, [user]);
-
-	// useEffect(() => console.log({ notSeenUpdatedChats }), [notSeenUpdatedChats]);
 
 	const value = {
 		userChats,
