@@ -5,7 +5,7 @@ import {
 	getDateFromTimestamp,
 	getUserById,
 	isUserOnline,
-	notifyWithAsound,
+	updateChatSeenAt,
 } from "../../../../lib";
 import useUsers from "../../../../context/useUsers";
 import { BsPersonCircle } from "react-icons/bs";
@@ -14,22 +14,14 @@ import dompurify from "dompurify";
 export default function Message({
 	message,
 	isLast = false,
-	lastlyNotifiedAt,
 }: {
 	message: IMessage;
 	isLast: boolean;
-	lastlyNotifiedAt: number | null;
 }) {
 	const messageRef = useRef<HTMLDivElement | null>(null);
 	const { user } = useUser();
 	const { users } = useUsers();
 	const interlocutor = getUserById(users!, message.senderId);
-
-	// this needed to prevent slight differences in miliseconds:
-	const lastlyNotifiedAtInSeconds = lastlyNotifiedAt
-		? Math.floor(lastlyNotifiedAt / 1000)
-		: Math.floor(message.createdAt / 1000) - 0.1;
-	const messageCreatedAtInSeconds = Math.floor(message.createdAt / 1000);
 
 	function convertTextWithClickableLinks(text: string) {
 		const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -50,30 +42,21 @@ export default function Message({
 	}
 
 	// 1. scroll to the last message;
-	// 2. if this is interlocutor message => notify
+	// 2. if this is interlocutor message => update seenAt
 	useEffect(() => {
 		if (!user) return;
 		// 1. scroll to the last message:
 		if (isLast) {
-			// 2. if this is interlocutor message => notify:
-			if (
-				message.receiverId === user.uid &&
-				lastlyNotifiedAtInSeconds < messageCreatedAtInSeconds
-			) {
-				notifyWithAsound(user.uid, message.chatId, "chat");
+			// 2. if the last message was sent by interlocutor => update seenAt:
+			if (message.receiverId === user.uid) {
+				updateChatSeenAt(user, message.chatId);
 			}
 
 			if (messageRef.current) {
 				messageRef.current.scrollIntoView();
 			}
 		}
-	}, [
-		isLast,
-		message,
-		user,
-		lastlyNotifiedAtInSeconds,
-		messageCreatedAtInSeconds,
-	]);
+	}, [isLast, message, user]);
 
 	if (!user) return null;
 

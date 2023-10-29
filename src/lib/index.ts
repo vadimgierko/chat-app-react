@@ -115,12 +115,9 @@ async function logOut(user: User) {
 
 //================ notifications ===================//
 
-async function notifyWithAsound(
-	userId: string,
-	chatId: string,
-	enviroment: "chat" | "chats"
-) {
-	console.log("...notifying...");
+async function notifyWithAsound(userId: string, chatIds: string[]) {
+	if (!chatIds.length) return;
+
 	// Play the notification sound:
 	const audio = new Audio(newMessageSound);
 
@@ -128,35 +125,41 @@ async function notifyWithAsound(
 	audio.volume = volumeLevel;
 
 	audio.play();
+	//=============================//
 
 	const userChatRef = doc(firestore, "user-chats", userId);
 
-	if (enviroment === "chats") {
-		// only notify (DO NOT UPDATE SEEN AT)
-		try {
-			await updateDoc(userChatRef, {
-				[`${chatId}.notifiedAt`]: getTimestamp() + 1000,
-			});
-		} catch (error) {
-			console.error(error);
-		}
-	} else if (enviroment === "chat") {
-		const timestamp = getTimestamp() + 1000;
-		// notify & update seenAt
-		try {
-			await updateDoc(userChatRef, {
-				[`${chatId}.notifiedAt`]: timestamp,
-				[`${chatId}.seenAt`]: timestamp,
-			});
-		} catch (error) {
-			console.error(error);
-		}
-	} else {
-		return;
+	const timestamp = getTimestamp() + 1000;
+
+	try {
+		const userChatsUpdates = chatIds.reduce(
+			(updates, id) => ({ ...updates, [`${id}.notifiedAt`]: timestamp }),
+			{}
+		);
+		await updateDoc(userChatRef, userChatsUpdates);
+	} catch (error) {
+		console.error(error);
 	}
 }
 
 //====================== CRUD ======================//
+
+async function updateChatSeenAt(user: User, chatId: string) {
+	console.log("Updating chat's seenAt prop...");
+
+	const timestamp = getTimestamp();
+
+	try {
+		const userChatRef = doc(firestore, "user-chats", user.uid);
+
+		await updateDoc(userChatRef, {
+			[`${chatId}.seenAt`]: timestamp,
+		});
+	} catch (error) {
+		console.log(error);
+		alert(error);
+	}
+}
 
 /**
  * initialize/ create new chat, add it to logged user & interlocutor user-chats & return chat id
@@ -291,4 +294,5 @@ export {
 	notifyWithAsound,
 	sendMessage,
 	signIn,
+	updateChatSeenAt,
 };
