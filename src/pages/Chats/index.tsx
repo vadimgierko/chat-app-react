@@ -14,7 +14,10 @@ export default function Chats() {
 
 	return (
 		<div>
-			<h1>Your chats</h1>
+			<h1>
+				Your chats
+				{userChats && userChats.length ? ` (${userChats.length})` : null}
+			</h1>
 			<hr />
 			{!userChats || !userChats.length ? (
 				<NoChats />

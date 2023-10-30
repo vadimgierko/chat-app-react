@@ -12,7 +12,9 @@ export default function Users() {
 
 	return (
 		<div className="users-page">
-			<h1 style={{ textAlign: "center" }}>Users</h1>
+			<h1 style={{ textAlign: "center" }}>
+				Users{users && users.length ? ` (${users.length})` : null}
+			</h1>
 			<hr />
 			{users ? <UsersList users={users} /> : <NoUsers />}
 		</div>
