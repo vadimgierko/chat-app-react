@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FirestoreUser } from "../../../../interfaces";
 import { initChat, isUserOnline } from "../../../../lib";
 import useUser from "../../../../context/useUser";
+import { Badge } from "react-bootstrap";
 
 export default function UserListItem({
 	user,
@@ -12,14 +13,25 @@ export default function UserListItem({
 	user: FirestoreUser;
 	isInterlocutor: boolean;
 }) {
-	const { userChats } = useUserChats();
+	const { userChats, notSeenUpdatedChats } = useUserChats();
 	const { user: loggedUser } = useUser();
 	const navigate = useNavigate();
+
+	const shouldNotifyVisually = notSeenUpdatedChats.find(
+		(c) => c.interlocutorId === user.uid
+	)
+		? true
+		: false;
 
 	if (!userChats) return null;
 
 	return (
-		<li className="p-2 mb-1" style={{ display: "flex" }}>
+		<li
+			className={`p-2 mb-1 ${
+				shouldNotifyVisually && "bg-dark text-light rounded"
+			}`}
+			style={{ display: "flex" }}
+		>
 			<div className="me-3">
 				{user.photoURL ? (
 					<img
@@ -81,6 +93,12 @@ export default function UserListItem({
 						}}
 					/>
 				)}
+
+			{shouldNotifyVisually && (
+				<div style={{ flexGrow: 1, textAlign: "end" }}>
+					<Badge bg={"success"}>new message/s</Badge>
+				</div>
+			)}
 		</li>
 	);
 }

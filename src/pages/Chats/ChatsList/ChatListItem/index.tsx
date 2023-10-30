@@ -11,9 +11,9 @@ export default function ChatListItem({ chat }: { chat: UserChat }) {
 	const interlocutor = users ? getUserById(users, chat.interlocutorId) : null;
 
 	const { notSeenUpdatedChats } = useUserChats();
-	const shouldNotifyVisually = notSeenUpdatedChats.find(
-		(c) => c.id === chat.id
-	);
+	const shouldNotifyVisually = notSeenUpdatedChats.find((c) => c.id === chat.id)
+		? true
+		: false;
 
 	const navigate = useNavigate();
 
