@@ -6,7 +6,7 @@ import { firestore } from "../../firebaseConfig";
 import useUser from "../../context/useUser";
 import { sendMessage } from "../../lib";
 import useUserChats from "../../context/useUserChats";
-import { Chat as IChat } from "../../interfaces";
+import { Chat as IChat, UserChat } from "../../interfaces";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
 import ChatHeader from "./ChatHeader";
@@ -14,6 +14,10 @@ import ChatHeader from "./ChatHeader";
 export default function Chat() {
 	const { id: chatId } = useParams();
 	const [chat, setChat] = useState<IChat | null>(null);
+
+	const [interlocutorSeenAt, setInterlocutorSeenAt] = useState<number | null>(
+		null
+	); // when interlocutor seen chat
 
 	const { user } = useUser();
 	const { users } = useUsers();
@@ -67,6 +71,32 @@ export default function Chat() {
 		return unsubscribe;
 	}, [chatId]);
 
+	// fetch & listen to intelocutor's seenAt:
+	useEffect(() => {
+		let unsubscribe;
+
+		if (interlocutor && chatId) {
+			console.log("fetching interlocutor's seenAt...");
+			unsubscribe = onSnapshot(
+				doc(firestore, "user-chats", interlocutor.uid),
+				(doc) => {
+					if (doc.exists()) {
+						const data = doc.data();
+						const interlocutorChat = data[chatId] as UserChat;
+
+						setInterlocutorSeenAt(interlocutorChat.seenAt);
+					} else {
+						console.error("There is no interlocutor user chat doc...");
+					}
+				}
+			);
+		} else {
+			setInterlocutorSeenAt(null);
+		}
+
+		return unsubscribe;
+	}, [chatId, interlocutor]);
+
 	if (!chat) return <p style={{ color: "red" }}>There is no such chat...</p>;
 	if (!interlocutor)
 		return <p style={{ color: "red" }}>There is no such interlocutor...</p>;
@@ -79,7 +109,10 @@ export default function Chat() {
 				messagesNum={chat.messages.length}
 			/>
 
-			<ChatMessages chatId={chat.id} messages={chat.messages} />
+			<ChatMessages
+				messages={chat.messages}
+				interlocutorSeenAt={interlocutorSeenAt}
+			/>
 
 			<ChatInput onSend={handleSendMessage} />
 		</div>

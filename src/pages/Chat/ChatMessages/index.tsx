@@ -3,11 +3,11 @@ import { Message as IMessage } from "../../../interfaces";
 import Message from "./Message";
 
 export default function ChatMessages({
-	chatId,
 	messages,
+	interlocutorSeenAt,
 }: {
-	chatId: string;
 	messages: IMessage[];
+	interlocutorSeenAt: number | null;
 }) {
 	const { user } = useUser();
 
@@ -23,6 +23,7 @@ export default function ChatMessages({
 					message={m}
 					key={m.content + i}
 					isLast={i === messages.length - 1}
+					interlocutorSeenAt={interlocutorSeenAt}
 				/>
 			))}
 		</div>

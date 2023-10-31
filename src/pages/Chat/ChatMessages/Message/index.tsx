@@ -14,9 +14,11 @@ import dompurify from "dompurify";
 export default function Message({
 	message,
 	isLast = false,
+	interlocutorSeenAt,
 }: {
 	message: IMessage;
 	isLast: boolean;
+	interlocutorSeenAt: number | null;
 }) {
 	const messageRef = useRef<HTMLDivElement | null>(null);
 	const { user } = useUser();
@@ -113,6 +115,7 @@ export default function Message({
 						></div>
 					</div>
 				)}
+
 				<div
 					style={{
 						width: "fit-content",
@@ -152,6 +155,11 @@ export default function Message({
 					<span ref={messageRef} />
 				</div>
 			</div>
+			{message.senderId === user.uid &&
+				interlocutorSeenAt &&
+				interlocutorSeenAt > message.createdAt && (
+					<span className="text-end text-secondary">seen</span>
+				)}
 		</div>
 	);
 }
