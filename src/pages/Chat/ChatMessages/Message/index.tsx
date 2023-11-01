@@ -1,29 +1,27 @@
 import { useEffect, useRef } from "react";
 import useUser from "../../../../context/useUser";
-import { Message as IMessage } from "../../../../interfaces";
+import { FirestoreUser, Message as IMessage } from "../../../../interfaces";
 import {
 	getDateFromTimestamp,
-	getUserById,
 	isUserOnline,
 	updateChatSeenAt,
 } from "../../../../lib";
-import useUsers from "../../../../context/useUsers";
 import { BsPersonCircle } from "react-icons/bs";
 import dompurify from "dompurify";
 
 export default function Message({
 	message,
 	isLast = false,
-	interlocutorSeenAt,
+	isLastSeen = false,
+	interlocutor,
 }: {
 	message: IMessage;
 	isLast: boolean;
-	interlocutorSeenAt: number | null;
+	isLastSeen: boolean;
+	interlocutor: FirestoreUser;
 }) {
 	const messageRef = useRef<HTMLDivElement | null>(null);
 	const { user } = useUser();
-	const { users } = useUsers();
-	const interlocutor = getUserById(users!, message.senderId);
 
 	function convertTextWithClickableLinks(text: string) {
 		const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -60,14 +58,14 @@ export default function Message({
 		}
 	}, [isLast, message, user]);
 
-	if (!user) return null;
+	if (!user || !interlocutor) return null;
 
 	return (
 		<div
 			className="message-container"
 			style={{
 				textAlign: message.senderId === user.uid ? "end" : "start",
-				marginBottom: "1em",
+				// marginBottom: "1em",
 			}}
 		>
 			<span className="mb-1 d-block text-secondary">
@@ -78,7 +76,7 @@ export default function Message({
 					display: "flex",
 				}}
 			>
-				{interlocutor && interlocutor.uid !== user.uid && (
+				{message.senderId === interlocutor.uid && (
 					<div style={{ width: 30, height: 30, marginRight: "0.5em" }}>
 						{interlocutor.photoURL ? (
 							<img
@@ -123,20 +121,24 @@ export default function Message({
 						marginLeft: message.senderId === user.uid ? "auto" : "0.5em",
 						marginRight: message.senderId === user.uid ? 0 : "auto",
 						// textAlign: message.senderId === user.uid ? "end" : "start",
-						backgroundColor:
-							message.senderId === user.uid
-								? "rgb(29, 61, 107)"
-								: "rgb(38, 41, 48)",
-						borderRadius: "12px",
-						marginBottom: "1em",
+						// backgroundColor:
+						// 	message.senderId === user.uid
+						// 		? "rgb(29, 61, 107)"
+						// 		: "rgb(38, 41, 48)",
+						// borderRadius: "12px",
+						// marginBottom: "1em",
 					}}
 				>
 					<pre
 						className="custom-pre text-start"
 						style={{
-							paddingTop: "0.5em",
-							paddingLeft: "0.5em",
-							paddingRight: "0.5em",
+							padding: "0.5em",
+
+							backgroundColor:
+								message.senderId === user.uid
+									? "rgb(29, 61, 107)"
+									: "rgb(38, 41, 48)",
+							borderRadius: "12px",
 							// THIS BELOW IS NEEDED TO STYLE PRE TEXT AS NORMAL BOOTSTRAP TEXT:
 							fontFamily: "inherit",
 							fontSize: "inherit",
@@ -152,14 +154,31 @@ export default function Message({
 						}}
 					></pre>
 
+					{isLastSeen ? (
+						interlocutor.photoURL ? (
+							<img
+								src={interlocutor.photoURL}
+								alt="interlocutor avatar"
+								width={30}
+								style={{
+									borderRadius: "50%",
+									marginBottom: "1em",
+								}}
+							/>
+						) : (
+							<BsPersonCircle
+								size={30}
+								style={{
+									borderRadius: "50%",
+									marginBottom: "1em",
+								}}
+							/>
+						)
+					) : null}
+
 					<span ref={messageRef} />
 				</div>
 			</div>
-			{message.senderId === user.uid &&
-				interlocutorSeenAt &&
-				interlocutorSeenAt > message.createdAt && (
-					<span className="text-end text-secondary">seen</span>
-				)}
 		</div>
 	);
 }

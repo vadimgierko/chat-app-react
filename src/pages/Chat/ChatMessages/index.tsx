@@ -1,15 +1,26 @@
 import useUser from "../../../context/useUser";
-import { Message as IMessage } from "../../../interfaces";
+import { FirestoreUser, Message as IMessage } from "../../../interfaces";
 import Message from "./Message";
 
 export default function ChatMessages({
 	messages,
 	interlocutorSeenAt,
+	interlocutor,
 }: {
 	messages: IMessage[];
 	interlocutorSeenAt: number | null;
+	interlocutor: FirestoreUser;
 }) {
 	const { user } = useUser();
+
+	const seenMessages = messages.filter((m) =>
+		interlocutorSeenAt && user && m.senderId === user.uid
+			? m.createdAt < interlocutorSeenAt
+			: false
+	);
+	const lastSeenMessage = seenMessages.length
+		? seenMessages[seenMessages.length - 1]
+		: null;
 
 	if (!user) return null;
 
@@ -23,7 +34,13 @@ export default function ChatMessages({
 					message={m}
 					key={m.content + i}
 					isLast={i === messages.length - 1}
-					interlocutorSeenAt={interlocutorSeenAt}
+					isLastSeen={
+						lastSeenMessage
+							? lastSeenMessage.content === m.content &&
+							  lastSeenMessage.createdAt === m.createdAt
+							: false
+					}
+					interlocutor={interlocutor}
 				/>
 			))}
 		</div>

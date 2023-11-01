@@ -2,7 +2,7 @@
 
 This app allows you to **sign in/up with Google account** and start a chat with registered users from the users list for **free**.
 
-You are able to see users' & interlocutors' **online status** & when they were **last seen**.
+You are able to see users' & interlocutors' **online status**, when they were **last seen** & **last seen message**.
 
 You will also get a **visual & sound notification** about new/ unseen messages.
 

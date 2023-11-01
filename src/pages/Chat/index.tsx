@@ -112,6 +112,7 @@ export default function Chat() {
 			<ChatMessages
 				messages={chat.messages}
 				interlocutorSeenAt={interlocutorSeenAt}
+				interlocutor={interlocutor}
 			/>
 
 			<ChatInput onSend={handleSendMessage} />

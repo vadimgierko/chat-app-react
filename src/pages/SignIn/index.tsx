@@ -13,16 +13,15 @@ export default function SignIn() {
 			<section style={{ maxWidth: 375, margin: "auto" }}>
 				<p>
 					<strong>Sign in/up with Google account</strong> and start a chat with
-					registered users from the users list for <strong>free</strong>.
+					registered users for <strong>free</strong>.
 				</p>
 				<p>
 					You are able to see users' & interlocutors'{" "}
-					<strong>online status</strong> & when they were{" "}
-					<strong>last seen</strong>.
+					<strong>online status</strong>, when they were{" "}
+					<strong>last seen</strong> & <strong>last seen message</strong>.
 				</p>
 				<p>
-					You'll also get a <strong>visual & sound notification</strong> about
-					new/ unseen messages.
+					You'll get <strong>visual & sound notifications</strong>.
 				</p>
 				<p>
 					You can send <strong>multiline messages</strong> & add{" "}
