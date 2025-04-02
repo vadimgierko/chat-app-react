@@ -3,7 +3,7 @@ import { auth, firestore } from "../firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, updateDoc, writeBatch } from "firebase/firestore";
 import { User } from "firebase/auth";
-import { FirestoreUser, UserChat } from "../interfaces";
+import { FirestoreUser } from "../interfaces";
 import { getTimestamp } from "../lib";
 
 const UserContext = createContext<{
@@ -89,8 +89,6 @@ export function UserProvider({ children }: UserProviderProps) {
 
 		return unsubscribe;
 	}, []);
-
-	// useEffect(() => console.log({ user }), [user]);
 
 	const value = {
 		user,

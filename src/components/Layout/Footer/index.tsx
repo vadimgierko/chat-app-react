@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { Container } from "react-bootstrap";
 import { BsGithub, BsGlobe } from "react-icons/bs";
-import { AiOutlineGithub } from "react-icons/ai";
 import { MaxWidthContext } from "..";
 
 export default function Footer() {
@@ -16,13 +15,8 @@ export default function Footer() {
 			className="text-center text-secondary p-1"
 			style={{ maxWidth: maxWidth }}
 		>
-			&copy;{" "}
-			{creationYear
-				? creationYear === currentYear
-					? creationYear.toString()
-					: creationYear.toString() + currentYear.toString()
-				: currentYear.toString()}{" "}
-			Vadim Gierko{" "}
+			&copy; {creationYear.toString() + "-" + currentYear.toString()} Vadim
+			Gierko{" "}
 			<a
 				className="footer-icon-link mx-1"
 				href="https://vadimgierko.com"

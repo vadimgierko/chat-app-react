@@ -7,22 +7,17 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 // react-router-bootstrap for link container:
 import { LinkContainer } from "react-router-bootstrap";
 //=============== ICONS =====================//
-import { AiOutlineLogout, AiOutlinePlusSquare } from "react-icons/ai";
+import { AiOutlineLogout } from "react-icons/ai";
 //=====================================================
 import logo from "../../../icons/logo.svg";
 import { BsPersonCircle } from "react-icons/bs";
-import { logOut, signIn } from "../../../lib/index";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, firestore } from "../../../firebaseConfig";
+import { logOut } from "../../../lib/index";
 import useUsers from "../../../context/useUsers";
 import useUserChats from "../../../context/useUserChats";
 import { useNavigate } from "react-router-dom";
-import { Badge, Button } from "react-bootstrap";
+import { Badge } from "react-bootstrap";
 import { useContext } from "react";
 import { MaxWidthContext } from "..";
-
-const testUserEmail = "testuser@gmail.com";
-const testUserPassword = "";
 
 export default function NavigationBar() {
 	const { user } = useUser();
@@ -39,7 +34,7 @@ export default function NavigationBar() {
 	return (
 		<Navbar collapseOnSelect expand="sm" bg="dark" variant="dark" fixed="top">
 			<Container style={{ maxWidth: maxWidth }}>
-				<LinkContainer to="/">
+				<LinkContainer to="/about">
 					<Navbar.Brand>
 						<img
 							src={logo}
@@ -119,21 +114,6 @@ export default function NavigationBar() {
 								</NavDropdown>
 							</>
 						)}
-
-						{/* {!user && (
-							<Button
-								variant="outline-secondary"
-								onClick={() =>
-									signInWithEmailAndPassword(
-										auth,
-										testUserEmail,
-										testUserPassword
-									)
-								}
-							>
-								sign in as test user
-							</Button>
-						)} */}
 					</Nav>
 				</Navbar.Collapse>
 			</Container>

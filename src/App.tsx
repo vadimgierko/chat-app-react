@@ -3,8 +3,9 @@ import Users from "./pages/Users";
 import Chats from "./pages/Chats";
 import Chat from "./pages/Chat";
 import Layout from "./components/Layout";
+import SignIn from "./pages/SignIn";
 
-function App() {
+export default function App() {
 	const router = createBrowserRouter([
 		{
 			path: "/",
@@ -22,11 +23,13 @@ function App() {
 					path: "chats/:id",
 					element: <Chat />,
 				},
+				{
+					path: "about",
+					element: <SignIn />,
+				},
 			],
 		},
 	]);
 
 	return <RouterProvider router={router} />;
 }
-
-export default App;

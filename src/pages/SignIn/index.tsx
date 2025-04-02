@@ -1,14 +1,21 @@
+import useUser from "../../context/useUser";
 import { signIn } from "../../lib";
 import Button from "react-bootstrap/Button";
 
 export default function SignIn() {
+	const { user } = useUser();
+
 	return (
 		<div className="text-center">
 			<h1>Welcome to VG Chat!</h1>
 
-			<Button variant="primary mt-3 mb-4" onClick={signIn}>
-				Sign in with Google
-			</Button>
+			{user ? (
+				<hr />
+			) : (
+				<Button variant="primary mt-3 mb-4" onClick={signIn}>
+					Sign in with Google
+				</Button>
+			)}
 
 			<section style={{ maxWidth: 375, margin: "auto" }}>
 				<p>
